@@ -1,0 +1,317 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>kingdom.sikuli</h2> <a href="kingdom.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">from</span> sikuli <span class="kw">import</span> *
+<span class="kw">from</span> common <span class="kw">import</span> *
+<span class="kw">import</span> random
+
+Res_Food   = <span class="dig">0</span>
+Res_Wood   = <span class="dig">1</span>
+Res_Iron   = <span class="dig">2</span>
+Res_Silver = <span class="dig">3</span>
+
+resourceImages = [<img src="1504627880561.png" />, <img src="1504627956538.png" />, <img src="1504627909370.png" />, <img src="1504628011262.png" />]
+convoyImages = [<img src="1505575078585.png" />, <img src="1505575098288.png" />, <img src="1505575069371.png" />, <span class="str">""</span>]
+
+NoTroops = <span class="dig">100</span>
+
+
+resources = []
+
+<span class="kw">def</span> inOccupied(coord, occupied):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.inOccupied %1$s %2$s"</span>, [coord, occupied])
+    <span class="kw">for</span> p <span class="kw">in</span> occupied:
+        <span class="kw">if</span> distance(coord, p) &lt; <span class="dig">15</span>:
+            <span class="kw">return</span> True
+    <span class="kw">return</span> False
+
+<span class="kw">def</span> occupyResource(region, resKind, occupied):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.occupyResource"</span>)
+    img = resourceImages[resKind]
+    <span class="kw">try</span>:
+        closePopups(region)
+        tiles = region.findAll(img)
+        <span class="kw">for</span> t <span class="kw">in</span> tiles:
+            closePopups(region)
+            <span class="kw">if</span> inOccupied(t, occupied):
+                <span class="kw">continue</span>
+            clickRnd(t)
+            occupy = region.exists(<img src="1504630391615.png" />, <span class="dig">2</span>)
+            <span class="kw">if</span> occupy:
+                clickRnd(occupy)
+                <span class="kw">if</span> region.exists(<img src="1505598796114.png" />, <span class="dig">2</span>):
+                    clickBack()
+                    <span class="skw">sleep</span>(<span class="dig">3</span>)
+                    <span class="kw">return</span> NoTroops
+                clickRnd( region.<span class="skw">wait</span>(<img src="1504630712884.png" />, <span class="dig">3</span>) )
+                <span class="kw">if</span> region.exists(<img src="1505602289803.png" />, <span class="dig">2</span>):
+                    clickBackN(<span class="dig">2</span>)
+                    <span class="kw">return</span> NoTroops
+                <span class="kw">if</span> region.exists(<img src="1504631086564.png" />, <span class="dig">2</span>):
+                    clickBack()
+                    <span class="skw">sleep</span>(<span class="dig">3</span>)
+                <span class="kw">else</span>:
+                    <span class="kw">return</span> t.getCenter()
+            <span class="kw">else</span>:
+                <span class="kw">while</span> True:
+                    p2 = pointRnd(region.grow(-<span class="dig">120</span>, -<span class="dig">220</span>))
+                    <span class="kw">if</span> distance(t.getCenter(), p2) &gt; <span class="dig">100</span>:
+                        region.<span class="skw">click</span>(p2)
+                        <span class="kw">break</span>
+    <span class="kw">except</span> FindFailed:
+        <span class="kw">return</span> None
+    <span class="kw">return</span> None
+
+<span class="kw">def</span> moveRnd(owner, coords_for_shift):
+    <span class="kw">print</span> <span class="str">"kingdom.moveRnd call "</span>, owner
+    beg_idx = random.randint(<span class="dig">1</span>, <span class="dig">7</span>)
+    <span class="kw">while</span> True:
+        end_idx = random.randint(<span class="dig">0</span>, <span class="dig">7</span>)
+        <span class="kw">if</span> beg_idx != end_idx:
+            <span class="kw">break</span>
+    count = random.randint(<span class="dig">1</span>, <span class="dig">3</span>)
+    inner_reg = owner.grow(-<span class="dig">100</span>)
+    <span class="kw">print</span> <span class="str">"owner: "</span>, owner, <span class="str">"inner_reg: "</span>, inner_reg
+    beg_reg = screenPartToRegion(inner_reg, beg_idx)
+    end_reg = screenPartToRegion(inner_reg, end_idx)
+    <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, count):
+        closePopups(owner)
+        beg_point = pointRnd(beg_reg)
+        end_point = pointRnd(end_reg)
+        slowDragDrop(owner, beg_point, end_point)
+        shift = Location(end_point.x - beg_point.x, end_point.y - beg_point.y)
+        <span class="kw">return</span> shiftCoords(coords_for_shift, shift)
+
+<span class="kw">def</span> collectResources(owner, resKind):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.collectResources"</span>)
+    occupied = []
+    <span class="kw">while</span> True:
+        closePopups(owner)
+        more = owner.exists(<img src="1504626448184.png" />)
+        <span class="kw">if</span> more != None:
+            <span class="kw">break</span>
+        <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">30</span>):
+            tile = occupyResource(owner, resKind, occupied)
+            <span class="kw">if</span> tile == NoTroops:
+                <span class="kw">return</span>()
+            <span class="kw">if</span> tile == None:
+                occupied = moveRnd(owner, occupied)
+            <span class="kw">else</span>:
+                occupied.append(tile)
+                <span class="kw">break</span>
+    <span class="kw">print</span> <span class="str">"kingdom.collectResources finished"</span>
+
+<span class="kw">def</span> returnTroops(region):
+    <span class="kw">print</span> <span class="str">"kingdom.returnTroops call"</span>
+    <span class="kw">while</span> True:
+        back = region.exists(<img src="1505250782722.png" />, <span class="dig">1</span>)
+        <span class="kw">if</span> back != None:
+            clickRnd(back)
+            clickRnd( <span class="skw">wait</span>(<img src="1505250997789.png" />, <span class="dig">3</span>) )
+        <span class="kw">else</span>:
+            <span class="kw">break</span>
+    <span class="kw">print</span> <span class="str">"kingdom.returnTroops finished"</span>
+
+<span class="kw">def</span> checkForOccupied(region):
+    <span class="kw">print</span> <span class="str">"kingdom.checkForOccupied call"</span>
+    <span class="kw">try</span>:
+        <span class="kw">for</span> b <span class="kw">in</span> region.findAll(<img src="1505250782722.png" />):
+            occupied = b.left(<span class="dig">200</span>).exists(<img src="1505303404123.png" />, <span class="dig">1</span>)
+            <span class="kw">if</span> occupied != None:
+                occupied.highlight(<span class="dig">2</span>)
+                <span class="kw">print</span> <span class="str">"Ruins are already occupied."</span>
+                <span class="kw">return</span> True
+    <span class="kw">except</span> FindFailed:
+        <span class="kw">print</span> <span class="str">"No back buttons found. Ready to seek for ruins"</span>
+    <span class="kw">return</span> False
+
+<span class="kw">def</span> occupyRuins(region):
+    <span class="kw">print</span> <span class="str">"kingdom.occupyRuins call"</span>
+    <span class="kw">if</span> checkForOccupied(region):
+        <span class="kw">return</span>()
+    <span class="kw">while</span> True:
+        ruin = region.exists(<img src="1505252015491.png" />, <span class="dig">1</span>)
+        <span class="kw">if</span> ruin != None:
+            <span class="kw">print</span> <span class="str">"Ruins found"</span>
+            ruin = moveToCenter(region, ruin)
+            clickRnd(ruin)
+            region.<span class="skw">click</span>(<img src="1505252255407.png" />)
+            <span class="kw">if</span> region.exists(<img src="1505431811409.png" />):
+                <span class="kw">print</span> <span class="str">"One march is in ruins."</span>
+                clickBack()
+                <span class="kw">return</span>()
+            buttons = region.findAll( precise(<img src="1505252417217.png" />) )
+            sorted_buttons = sorted(buttons, key=<span class="kw">lambda</span> m:m.y, reverse=True)
+            <span class="kw">for</span> sb <span class="kw">in</span> sorted_buttons:
+                <span class="kw">try</span>:
+                    clickRnd(sb)
+                    <span class="kw">if</span> exists(<img src="1505431404084.png" />):
+                        <span class="kw">print</span> <span class="str">"Maximum number of march"</span>
+                        clickBack()
+                        <span class="kw">return</span>()
+                    <span class="kw">else</span>:
+                        clickRnd( region.<span class="skw">find</span>(<img src="1505253180540.png" />) )
+                        <span class="kw">print</span> <span class="str">"Ruins are occupied"</span>
+                        <span class="kw">return</span>()
+                <span class="kw">except</span> FindFailed:
+                    <span class="kw">continue</span>
+        <span class="kw">else</span>:
+            <span class="kw">print</span> <span class="str">"Ruins not found, moving random"</span>
+            moveRnd(region, [])
+
+<span class="kw">def</span> underShild(region):
+    <span class="kw">print</span> <span class="str">"kingdom.underShild call"</span>
+    res = False
+    <span class="kw">print</span> <span class="str">"kingdom.underShild returns:"</span>, res
+    <span class="kw">return</span> res
+
+<span class="kw">def</span> setupCamps(region):
+    <span class="kw">print</span> <span class="str">"kingdom.setupCamps call"</span>
+    backToNormalView(region)
+    <span class="kw">while</span> True:
+        <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">15</span>):
+            p1 = pointRnd(region.grow(-<span class="dig">120</span>, -<span class="dig">220</span>))
+            region.<span class="skw">click</span>(p1)
+            tp = region.exists(<img src="1505392746272.png" />)
+            <span class="kw">if</span> tp != None:
+                <span class="kw">try</span>:
+                    clickRnd( tp.right(<span class="dig">150</span>).grow(<span class="dig">20</span>).<span class="skw">find</span>(<img src="1505392863162.png" />) )
+                    <span class="kw">if</span> region.exists(<img src="1505393098116.png" />) != None:
+                        <span class="kw">print</span> <span class="str">"Can't set up a camp. Maximum march number"</span>
+                        clickBack()
+                    <span class="kw">else</span>:
+                        clickRnd( <span class="skw">find</span>(<img src="1505392924678.png" />) )
+                    <span class="kw">return</span> True
+                <span class="kw">except</span> FindFailed:
+                    <span class="kw">print</span> <span class="str">"Seize button not found or another strange things occur"</span>
+            clickRnd(region.grow(-<span class="dig">150</span>, -<span class="dig">200</span>))
+            <span class="skw">sleep</span>(<span class="dig">2</span>)
+            <span class="kw">while</span> True:
+                p2 = pointRnd(region.grow(-<span class="dig">120</span>, -<span class="dig">220</span>))
+                <span class="kw">if</span> distance(p1, p2) &gt; <span class="dig">100</span>:
+                    region.<span class="skw">click</span>(p2)
+                    backToNormalView(region)
+                    <span class="kw">break</span>
+        moveRnd(region, [])
+
+<span class="kw">def</span> returnCamps(region):
+    <span class="kw">print</span> <span class="str">"kingdom.returnCamps call"</span>
+    backToNormalView(region)
+    <span class="kw">try</span>:
+        <span class="kw">for</span> b <span class="kw">in</span> region.findAll( precise(<img src="1505250782722.png" />)):
+            <span class="kw">print</span> <span class="str">"Back button checking"</span>
+            iscamp = b.left(<span class="dig">200</span>).exists(<img src="1505395766638.png" />, <span class="dig">1</span>)
+
+            <span class="kw">if</span> iscamp != None:
+                <span class="kw">print</span> <span class="str">"Troops are returning from the camp."</span>
+                clickRnd(b)
+                clickRnd( <span class="skw">wait</span>(<img src="1505395550716.png" />, <span class="dig">2</span>) )
+                <span class="kw">return</span> True
+            <span class="kw">else</span>:
+                <span class="kw">print</span> <span class="str">"It is not a camp"</span>
+    <span class="kw">except</span> FindFailed:
+        <span class="kw">print</span> <span class="str">"No back buttons found. No troops to return."</span>
+        <span class="kw">return</span> False
+
+<span class="kw">def</span> troopsMustGo(region):
+    <span class="kw">print</span> <span class="str">"kingdom.troopsMustGo call"</span>
+    occupyRuins(region)
+    <span class="kw">if</span> <span class="kw">not</span> underShild(reguin):
+        returnCamps(region)
+        setupCamps(region)
+    <span class="kw">print</span> <span class="str">"kingdom.troopsMustGo finished"</span>
+
+<span class="kw">def</span> showSafeZone(region, zone):
+    <span class="kw">print</span> <span class="str">"kingdom.showSafeZone call"</span>
+    <span class="kw">if</span> modes.setMode(win, modes.Mode_Kingdom):
+        clickRnd(zone)
+    modes.setMode(win, modes.Mode_Map)
+    <span class="kw">print</span> <span class="str">"kingdom.showSafeZone finished"</span>
+
+<span class="kw">def</span> sendResources(region, whom, resKind):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL acount.sendResources"</span>)
+    backToNormalView(region)
+    clickImagesRnd(region, [<img src="1505574780483.png" />, <img src="1505574802226.png" />, <img src="1505574855780.png" />])
+    <span class="kw">if</span> whom == <span class="str">"Buzuk"</span>:
+        clickRnd( region.<span class="skw">find</span>(<img src="1505574899071.png" />) )
+    <span class="kw">else</span>:
+        Debug.log(<span class="dig">1</span>, <span class="str">"Convoy destination not found"</span>)
+        <span class="kw">return</span>()
+    clickRnd( region.<span class="skw">find</span>(<img src="1505574921021.png" />) )
+    res = region.<span class="skw">find</span>(convoyImages[resKind])
+    beg_point = pointRnd( res.right(<span class="dig">200</span>).<span class="skw">find</span>(<img src="1505574963232.png" />) )
+    end_point = pointRnd( res.right(<span class="dig">700</span>).<span class="skw">find</span>(<img src="1505574978849.png" />) )
+    slowDragDrop(region, beg_point, end_point)
+    clickRnd( region.<span class="skw">find</span>(<img src="1505575027073.png" />) )
+</pre>
+</body>
+</html>

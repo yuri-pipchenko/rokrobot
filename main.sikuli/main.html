@@ -1,0 +1,210 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>main.sikuli</h2> <a href="main.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">from</span> common <span class="kw">import</span> *
+<span class="kw">import</span> common
+<span class="kw">import</span> account
+<span class="kw">import</span> modes
+<span class="kw">import</span> castle
+<span class="kw">import</span> kingdom
+<span class="kw">import</span> emulator
+<span class="kw">import</span> math
+
+reload(common)
+reload(account)
+reload(modes)
+reload(castle)
+reload(kingdom)
+reload(emulator)
+
+<span class="cmt">#Settings.OcrTextSearch = True</span>
+<span class="cmt">#Settings.OcrTextRead = True</span>
+
+
+<span class="kw">def</span> getProps():
+    top = <span class="skw">find</span>(<img src="1503241270521.png" />).right(<span class="dig">470</span>)
+    top.highlight(<span class="dig">2</span>)
+    tWood = top.<span class="skw">find</span>(<img src="1503225093138.png" />).right(<span class="dig">50</span>)
+    tWood.highlight()
+    Wood = tWood.text()
+    tMeal = top.<span class="skw">find</span>(<img src="1503230738347.png" />).right(<span class="dig">50</span>)
+    tMeal.highlight()
+    Meal = tMeal.text()
+    tIron = top.<span class="skw">find</span>(<img src="1503227926880.png" />).right(<span class="dig">50</span>)
+    tIron.highlight()
+    Iron = tIron.text()
+    <span class="kw">return</span> (Wood, Meal, Iron)
+
+<span class="kw">def</span> runROK(win):
+   win.<span class="skw">click</span>(<img src="1505205538684.png" />)
+   account.waitROKLoad(win)
+
+<span class="kw">def</span> closeROK(win):
+    win.right(<span class="dig">50</span>).<span class="skw">click</span>(<img src="1505205664308.png" />)
+    icon = win.<span class="skw">find</span>(<img src="1505205722817.png" />)
+    <span class="skw">dragDrop</span>(icon, icon.right(<span class="dig">500</span>))
+    <span class="skw">sleep</span>(<span class="dig">20</span>)
+
+
+<span class="kw">def</span> dailyRoutine():
+    Debug.log(<span class="dig">1</span>, <span class="str">"-------- DAILY ROUTINE --------"</span>)
+    <span class="kw">while</span> True:
+        emulator.runEmulator()
+        win = emulator.defineWindow(emulator.Emul_Nox)
+        win.highlight(<span class="dig">1</span>)
+        runROK(win)
+        <span class="kw">for</span> acc <span class="kw">in</span> range(<span class="dig">0</span>, len(accountImages)):
+            <span class="kw">try</span>:
+                account.changeAccount(win, accountImages[acc])
+                <span class="kw">if</span> modes.setMode(win, modes.Mode_Castle):
+                    castle.dragonChallenge(win)
+                    castle.treasury(win)
+                    castle.clearBag(win)
+                castle.checkForHints(win)
+                <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
+                    kingdom.collectResources(win, accountRes[acc])
+            <span class="kw">except</span> FindFailed:
+                Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. FindFailed"</span>)
+                <span class="kw">continue</span>
+            <span class="kw">except</span> ValueError:
+                Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. UnknownGameState"</span>)
+                <span class="kw">break</span>
+        emulator.closeEmulator(win)
+
+<span class="kw">def</span> warMode():
+    <span class="kw">while</span> True:
+        runROK(win)
+        <span class="kw">for</span> acc <span class="kw">in</span> range(<span class="dig">0</span>, len(accountImages)):
+            sleepRnd(<span class="dig">120</span>)
+            <span class="kw">try</span>:
+                account.changeAccount(win, accountImages[acc])
+                <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
+                    kingdom.occupyRuins(win)
+                    kingdom.setupCamps(win)
+                    kingdom.returnCamps(win)
+            <span class="kw">except</span> FindFailed:
+                <span class="kw">continue</span>
+        closeROK(win)
+
+
+
+accountImages = [<img src="1505069619124.png" />, <img src="1505070250701.png" />, <img src="1505070265885.png" />, <img src="1505070277576.png" />, <img src="1505070293164.png" />, <img src="1505070305383.png" />, <img src="1505070319898.png" />, <img src="1505070338301.png" />]
+accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]
+
+<span class="cmt">#accountImages = ["1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]</span>
+<span class="cmt">#accountRes    = [kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]</span>
+
+
+
+Settings.MoveMouseDelay = <span class="dig">0.5</span>
+Settings.UserLogs = True
+Settings.UserLogPrefix = <span class="str">"user"</span>
+Settings.UserLogTime = True
+
+<span class="kw">while</span> False:
+    kingdom.setupCamps(win)
+    kingdom.returnCamps(win)
+    <span class="skw">sleep</span>(<span class="dig">20</span>)
+
+<span class="cmt">#kingdom.occupyRuins(win)</span>
+<span class="cmt">#kingdom.collectResources(win, kingdom.Res_Food)</span>
+dailyRoutine()
+<span class="cmt">#warMode()</span>
+
+<span class="cmt">#win = emulator.defineWindow(emulator.Emul_Nox)    </span>
+<span class="cmt">#win.highlight(1)</span>
+
+<span class="cmt">#castle.dragonChallenge(win)</span>
+<span class="cmt">#castle.clearBag(win)</span>
+<span class="cmt">#modes.setMode(win, modes.Mode_Kingdom)</span>
+<span class="cmt">#castle.clearBag(win)</span>
+<span class="cmt">#castle.treasury(win)</span>
+<span class="cmt">#kingdom.sendResources(win, "Buzuk", kingdom.Res_Wood)</span>
+<span class="cmt">#castle.locate(win, castle.Pos_Gardens)</span>
+
+
+
+<span class="cmt">#locate(win, Pos_Gardens)</span>
+
+<span class="cmt">#setMode(win, Mode_Map)</span>
+<span class="cmt">#setMode(win, Mode_Castle)</span>
+<span class="cmt">#setMode(win, Mode_Castle)</span>
+<span class="cmt">#clickPersonRnd(win)</span>
+
+<span class="cmt">#collectResources(win, Res_Food)</span>
+
+<span class="cmt">#(W, M, I) = getProps()</span>
+<span class="cmt">#System.out.println("W: " + W + " M: " + M + " I: " + I)</span>
+
+</pre>
+</body>
+</html>
