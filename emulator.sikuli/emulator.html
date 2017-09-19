@@ -79,7 +79,8 @@ Emul_Nox = <span class="dig">1</span>
     <span class="kw">print</span> <span class="str">"emulator.defineWindow call. Type: "</span>, <span class="skw">type</span>
     <span class="kw">if</span> <span class="skw">type</span> == Emul_Nox:
         leftPan = <span class="skw">find</span>(<img src="1503271552031.png" />)
-        topPan = <span class="skw">find</span>(<img src="1503271101932.png" />)
+        topPan = <span class="skw">find</span>(<img src="1505828573090.png" />)
+
         topPan.<span class="skw">click</span>( topPan.getCenter() )
         y = leftPan.getBottomLeft().getY() - topPan.getBottomLeft().getY()
         <span class="kw">print</span> <span class="str">"Emulator window detected"</span>
@@ -94,7 +95,7 @@ Emul_Nox = <span class="dig">1</span>
     <span class="skw">sleep</span>(<span class="dig">180</span>)
 
 <span class="kw">def</span> closeEmulator(region):
-    topPan = <span class="skw">find</span>(<img src="1503271101932.png" />)
+    topPan = <span class="skw">find</span>(<img src="1505828573090.png" />)
     topPan.<span class="skw">click</span>(<img src="1505689555047.png" />)
     pop = region.<span class="skw">wait</span>(<img src="1505689585796.png" />, <span class="dig">5</span>)
     pop.<span class="skw">click</span>(<img src="1505689610441.png" />)
