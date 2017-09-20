@@ -177,12 +177,12 @@ Settings.UserLogTime = True
 
 <span class="cmt">#kingdom.occupyRuins(win)</span>
 <span class="cmt">#kingdom.collectResources(win, kingdom.Res_Food)</span>
-dailyRoutine()
+<span class="cmt">#dailyRoutine()</span>
 <span class="cmt">#warMode()</span>
 
-<span class="cmt">#win = emulator.defineWindow(emulator.Emul_Nox)    </span>
-<span class="cmt">#win.highlight(2)</span>
-<span class="cmt">#print "Emulator demensions:", win.w, win.h</span>
+win = emulator.defineWindow(emulator.Emul_Nox)
+win.highlight(<span class="dig">2</span>)
+<span class="kw">print</span> <span class="str">"Emulator demensions:"</span>, win.w, win.h
 
 <span class="cmt">#castle.dragonChallenge(win)</span>
 <span class="cmt">#castle.clearBag(win)</span>

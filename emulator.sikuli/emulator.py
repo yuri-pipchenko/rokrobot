@@ -19,8 +19,8 @@ def defineWindow(type):
         return None
 
 def runEmulator():
-    doubleClick("1505689409707.png")
-    sleep(180)
+    openApp("C:\\Program Files (x86)\\Nox\\bin\\Nox.exe")
+    sleep(120)
 
 def closeEmulator(region):
     topPan = find("1505828573090.png")
