@@ -109,7 +109,8 @@ dailyRoutine()
 #warMode()
 
 #win = emulator.defineWindow(emulator.Emul_Nox)    
-#win.highlight(1)
+#win.highlight(2)
+#print "Emulator demensions:", win.w, win.h
 
 #castle.dragonChallenge(win)
 #castle.clearBag(win)
