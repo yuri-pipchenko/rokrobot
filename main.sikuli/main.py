@@ -105,12 +105,12 @@ while False:
 
 #kingdom.occupyRuins(win)
 #kingdom.collectResources(win, kingdom.Res_Food)
-#dailyRoutine()
+dailyRoutine()
 #warMode()
 
-win = emulator.defineWindow(emulator.Emul_Nox)    
-win.highlight(2)
-print "Emulator demensions:", win.w, win.h
+#win = emulator.defineWindow(emulator.Emul_Nox)    
+#win.highlight(2)
+#print "Emulator demensions:", win.w, win.h
 
 #castle.dragonChallenge(win)
 #castle.clearBag(win)
