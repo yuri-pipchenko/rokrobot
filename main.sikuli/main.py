@@ -45,6 +45,29 @@ def closeROK(win):
 
 def dailyRoutine():
     Debug.log(1, "-------- DAILY ROUTINE --------")
+    emulator.runEmulator()
+    win = emulator.defineWindow(emulator.Emul_Nox)    
+    win.highlight(1)        
+    runROK(win)
+    for acc in range(0, len(accountImages)):
+        try:
+            account.changeAccount(win, accountImages[acc])
+            if modes.setMode(win, modes.Mode_Castle):
+                castle.dragonChallenge(win)
+                castle.treasury(win)
+                castle.clearBag(win)
+            castle.checkForHints(win)
+        except FindFailed:
+            Debug.log(1, "EXCEPTION. FindFailed")
+            continue
+        except ValueError:
+            Debug.log(1, "EXCEPTION. UnknownGameState")
+            break
+    emulator.closeEmulator(win)
+    Debug.log(1, "-- DAILY ROUTINE FINISHED --")
+
+def farming():
+    Debug.log(1, "-------- FARMING --------")
     while True:
         emulator.runEmulator()
         win = emulator.defineWindow(emulator.Emul_Nox)    
@@ -54,11 +77,10 @@ def dailyRoutine():
             try:
                 account.changeAccount(win, accountImages[acc])
                 if modes.setMode(win, modes.Mode_Castle):
-                    castle.dragonChallenge(win)
-                    castle.treasury(win)
-                    castle.clearBag(win)
-                castle.checkForHints(win)
+                    castle.closePopups(win)
+                    castle.checkForHints(win)
                 if modes.setMode(win, modes.Mode_Map):
+                    kingdom.sendResources(win)
                     kingdom.collectResources(win, accountRes[acc])
             except FindFailed:
                 Debug.log(1, "EXCEPTION. FindFailed")
@@ -67,6 +89,7 @@ def dailyRoutine():
                 Debug.log(1, "EXCEPTION. UnknownGameState")
                 break
         emulator.closeEmulator(win)
+    Debug.log(1, "---- FARMING FINISHED ----")
 
 def warMode():
     while True:
@@ -106,10 +129,11 @@ while False:
 #kingdom.occupyRuins(win)
 #kingdom.collectResources(win, kingdom.Res_Food)
 dailyRoutine()
+#farming()
 #warMode()
-
 #win = emulator.defineWindow(emulator.Emul_Nox)    
 #win.highlight(2)
+#kingdom.sendResources(win)
 #print "Emulator demensions:", win.w, win.h
 
 #castle.dragonChallenge(win)

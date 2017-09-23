@@ -10,8 +10,16 @@ Res_Silver = 3
 resourceImages = ["1504627880561.png", "1504627956538.png", "1504627909370.png", "1504628011262.png"]
 convoyImages = ["1505575078585.png", "1505575098288.png", "1505575069371.png", ""]
 
-NoTroops = 100
+Range1 = 0
+Range2 = 1
+Range3 = 2
+Range4 = 3
+Range5 = 4
 
+rangeImages = ["1506033700476.png", "1506033821564.png", "1506033836072.png",
+               "1506033848538.png", "1506033860871.png"]
+
+NoTroops = 100
 
 resources = []
 
@@ -82,20 +90,21 @@ def moveRnd(owner, coords_for_shift):
 def collectResources(owner, resKind):
     Debug.log(1, "CALL kingdom.collectResources")
     occupied = []
-    while True:
-        closePopups(owner)
-        more = owner.exists("1504626448184.png")
-        if more != None:
+#    while True:
+    closePopups(owner)
+    more = owner.exists("1504626448184.png")
+    if more:
+        return
+#        break
+    for i in range(0, 30):
+        tile = occupyResource(owner, resKind, occupied)
+        if tile == NoTroops:
+            return()
+        if tile == None:
+            occupied = moveRnd(owner, occupied)
+        else:
+            occupied.append(tile)
             break
-        for i in range(0, 30):
-            tile = occupyResource(owner, resKind, occupied)
-            if tile == NoTroops:
-                return()
-            if tile == None:
-                occupied = moveRnd(owner, occupied)
-            else:
-                occupied.append(tile)
-                break
     print "kingdom.collectResources finished"
 
 def returnTroops(region):
@@ -225,19 +234,66 @@ def showSafeZone(region, zone):
     modes.setMode(win, modes.Mode_Map)
     print "kingdom.showSafeZone finished"
     
-def sendResources(region, whom, resKind):
-    Debug.log(1, "CALL acount.sendResources")
+def sendRes(region, alRange, memberIcon, resKinds):
+    Debug.log(1, "CALL kingdom.sendRes")
     backToNormalView(region)
-    clickImagesRnd(region, ["1505574780483.png", "1505574802226.png", "1505574855780.png"])
-    if whom == "Buzuk":
-        clickRnd( region.find("1505574899071.png") )     
-    else:
-        Debug.log(1, "Convoy destination not found")
-        return()
+    clickImagesRnd(region, ["1505574780483.png", "1505574802226.png"])
+    while True:
+        sleep(2)
+        up = region.exists(Pattern("1506033387460.png").exact())
+        if not up:
+            break
+        clickRnd(up)
+    Debug.log(1, "click Range line..")    
+    clickRnd( region.find(rangeImages[alRange]) )
+    no_member = True
+    for i in range(0, 4):
+        Debug.log(1, "seek for member icon..")
+        icon = region.exists(Pattern(memberIcon).similar(0.9), 3)
+        if icon:
+            icon.setH(icon.h + 30)
+            icon.setW(icon.w + 30)
+            clickRnd(icon)
+            no_member = False
+            break
+        Debug.log(1, "..member icon not found yet, scrolling..")    
+        beg_reg = screenPartToRegion(region, 6)
+        end_reg = screenPartToRegion(region, 2)
+        beg_point = pointRnd(beg_reg)
+        end_point = pointRnd(end_reg)
+        region.dragDrop(beg_point, end_point)
+        sleep(2)
+        
+    if no_member:
+        Debug.log(1, "Member not found in alliance, exiting")    
+        clickBackN(2)
+        return False
     clickRnd( region.find("1505574921021.png") )
-    res = region.find(convoyImages[resKind])
-    beg_point = pointRnd( res.right(200).find("1505574963232.png") )
-    end_point = pointRnd( res.right(700).find("1505574978849.png") )
-    slowDragDrop(region, beg_point, end_point)
+    if region.exists("1505393098116.png", 1):
+        Debug.log(1, "No empty marches, exiting")
+        clickBackN(4)
+        return False
+    for r in resKinds:
+        res = region.find( convoyImages[r] )
+        beg_point = pointRnd( res.right(200).find("1505574963232.png") )
+        end_point = pointRnd( res.right(700).find("1505574978849.png").left(30) )
+        slowDragDrop(region, beg_point, end_point)
+    if region.exists(Pattern("1506083074416.png").similar(0.9)):
+        Debug.log(1, "Nothing to send, exiting")
+        clickBackN(4)
+        return False
     clickRnd( region.find("1505575027073.png") )
+    sleep(2)
+    return True
     
+def sendResources(region):
+    Debug.log(1, "CALL kingdom.sendResources")
+    try:
+        Debug.log(1, "Sending Iron and Wood to main Buzuk")
+        while sendRes(region, Range3, "1505574899071.png", [Res_Iron, Res_Wood]):
+            pass
+        Debug.log(1, "Sending Food to buzuk2")
+        while sendRes(region, Range1, "1506034015567.png", [Res_Food]):
+            pass
+    except FindFailed:
+        Debug.log(1, "EXCEPTION. Image not found in kingdom.sendResources")
