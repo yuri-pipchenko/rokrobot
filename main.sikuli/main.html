@@ -180,11 +180,11 @@ reload(emulator)
 
 
 
-accountImages = [<img src="1505069619124.png" />, <img src="1505070250701.png" />, <img src="1505070265885.png" />, <img src="1505070277576.png" />, <img src="1505070293164.png" />, <img src="1505070305383.png" />, <img src="1505070319898.png" />, <img src="1505070338301.png" />]
-accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]
+<span class="cmt">#accountImages = ["1505069619124.png", "1505070250701.png", "1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]</span>
+<span class="cmt">#accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]</span>
 
-<span class="cmt">#accountImages = ["1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]</span>
-<span class="cmt">#accountRes    = [kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]</span>
+accountImages = [<img src="1505070277576.png" />, <img src="1505070293164.png" />, <img src="1505070305383.png" />, <img src="1505070319898.png" />, <img src="1505070338301.png" />]
+accountRes    = [kingdom.Res_Wood, kingdom.Res_Wood, kingdom.Res_Wood, kingdom.Res_Food, kingdom.Res_Food]
 
 
 
@@ -200,14 +200,14 @@ Settings.UserLogTime = True
 
 <span class="cmt">#kingdom.occupyRuins(win)</span>
 <span class="cmt">#kingdom.collectResources(win, kingdom.Res_Food)</span>
-dailyRoutine()
-<span class="cmt">#farming()</span>
+<span class="cmt">#dailyRoutine()</span>
+farming()
 <span class="cmt">#warMode()</span>
 <span class="cmt">#win = emulator.defineWindow(emulator.Emul_Nox)    </span>
 <span class="cmt">#win.highlight(2)</span>
 <span class="cmt">#kingdom.sendResources(win)</span>
 <span class="cmt">#print "Emulator demensions:", win.w, win.h</span>
-
+<span class="cmt">#Correct size: 546x969</span>
 <span class="cmt">#castle.dragonChallenge(win)</span>
 <span class="cmt">#castle.clearBag(win)</span>
 <span class="cmt">#modes.setMode(win, modes.Mode_Kingdom)</span>

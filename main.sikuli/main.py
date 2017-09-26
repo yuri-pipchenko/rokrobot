@@ -108,11 +108,11 @@ def warMode():
 
 
 
-accountImages = ["1505069619124.png", "1505070250701.png", "1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
-accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]
+#accountImages = ["1505069619124.png", "1505070250701.png", "1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
+#accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]
 
-#accountImages = ["1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
-#accountRes    = [kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]
+accountImages = ["1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
+accountRes    = [kingdom.Res_Wood, kingdom.Res_Wood, kingdom.Res_Wood, kingdom.Res_Food, kingdom.Res_Food]
 
 
 
@@ -128,14 +128,14 @@ while False:
 
 #kingdom.occupyRuins(win)
 #kingdom.collectResources(win, kingdom.Res_Food)
-dailyRoutine()
-#farming()
+#dailyRoutine()
+farming()
 #warMode()
 #win = emulator.defineWindow(emulator.Emul_Nox)    
 #win.highlight(2)
 #kingdom.sendResources(win)
 #print "Emulator demensions:", win.w, win.h
-
+#Correct size: 546x969
 #castle.dragonChallenge(win)
 #castle.clearBag(win)
 #modes.setMode(win, modes.Mode_Kingdom)

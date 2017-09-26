@@ -162,12 +162,9 @@ resources = []
 <span class="kw">def</span> collectResources(owner, resKind):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.collectResources"</span>)
     occupied = []
-<span class="cmt">#    while True:</span>
     closePopups(owner)
-    more = owner.exists(<img src="1504626448184.png" />)
-    <span class="kw">if</span> more:
+    <span class="kw">if</span> owner.exists(<img src="1504626448184.png" />):
         <span class="kw">return</span>
-<span class="cmt">#        break</span>
     <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">30</span>):
         tile = occupyResource(owner, resKind, occupied)
         <span class="kw">if</span> tile == NoTroops:
@@ -183,7 +180,7 @@ resources = []
     <span class="kw">print</span> <span class="str">"kingdom.returnTroops call"</span>
     <span class="kw">while</span> True:
         back = region.exists(<img src="1505250782722.png" />, <span class="dig">1</span>)
-        <span class="kw">if</span> back != None:
+        <span class="kw">if</span> back:
             clickRnd(back)
             clickRnd( <span class="skw">wait</span>(<img src="1505250997789.png" />, <span class="dig">3</span>) )
         <span class="kw">else</span>:
@@ -306,7 +303,7 @@ resources = []
     modes.setMode(win, modes.Mode_Map)
     <span class="kw">print</span> <span class="str">"kingdom.showSafeZone finished"</span>
 
-<span class="kw">def</span> sendRes(region, alRange, memberIcon, resKinds):
+<span class="kw">def</span> sendRes(region, alRange, memberIcon, memberNamePic, resKinds):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.sendRes"</span>)
     backToNormalView(region)
     clickImagesRnd(region, [<img src="1505574780483.png" />, <img src="1505574802226.png" />])
@@ -334,12 +331,16 @@ resources = []
         beg_point = pointRnd(beg_reg)
         end_point = pointRnd(end_reg)
         region.<span class="skw">dragDrop</span>(beg_point, end_point)
-        <span class="skw">sleep</span>(<span class="dig">2</span>)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
 
     <span class="kw">if</span> no_member:
-        Debug.log(<span class="dig">1</span>, <span class="str">"Member not found in alliance, exiting"</span>)
+        Debug.log(<span class="dig">1</span>, <span class="str">"Member not found in the alliance, exiting.."</span>)
         clickBackN(<span class="dig">2</span>)
         <span class="kw">return</span> False
+    <span class="kw">if</span> <span class="kw">not</span> exists(memberNamePic, <span class="dig">2</span>):
+        Debug.log(<span class="dig">1</span>, <span class="str">"Wrong member is opened. Trying again.."</span>)
+        clickBackN(<span class="dig">3</span>)
+        <span class="kw">return</span> True
     clickRnd( region.<span class="skw">find</span>(<img src="1505574921021.png" />) )
     <span class="kw">if</span> region.exists(<img src="1505393098116.png" />, <span class="dig">1</span>):
         Debug.log(<span class="dig">1</span>, <span class="str">"No empty marches, exiting"</span>)
@@ -348,9 +349,10 @@ resources = []
     <span class="kw">for</span> r <span class="kw">in</span> resKinds:
         res = region.<span class="skw">find</span>( convoyImages[r] )
         beg_point = pointRnd( res.right(<span class="dig">200</span>).<span class="skw">find</span>(<img src="1505574963232.png" />) )
-        end_point = pointRnd( res.right(<span class="dig">700</span>).<span class="skw">find</span>(<img src="1505574978849.png" />).left(<span class="dig">30</span>) )
+        end_point = pointRnd( res.right(<span class="dig">700</span>).<span class="skw">find</span>(<img src="1506291390404.png" />).left(<span class="dig">30</span>) )
         slowDragDrop(region, beg_point, end_point)
-    <span class="kw">if</span> region.exists(Pattern(<img src="1506083074416.png" />).similar(<span class="dig">0.9</span>)):
+    <span class="skw">sleep</span>(<span class="dig">1</span>)
+    <span class="kw">if</span> region.exists(Pattern(<img src="1506083074416.png" />).similar(<span class="dig">0.90</span>)):
         Debug.log(<span class="dig">1</span>, <span class="str">"Nothing to send, exiting"</span>)
         clickBackN(<span class="dig">4</span>)
         <span class="kw">return</span> False
@@ -362,11 +364,17 @@ resources = []
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.sendResources"</span>)
     <span class="kw">try</span>:
         Debug.log(<span class="dig">1</span>, <span class="str">"Sending Iron and Wood to main Buzuk"</span>)
-        <span class="kw">while</span> sendRes(region, Range3, <img src="1505574899071.png" />, [Res_Iron, Res_Wood]):
-            <span class="kw">pass</span>
+        <span class="kw">while</span> True:
+            <span class="kw">if</span> region.exists(<img src="1504626448184.png" />):
+                <span class="kw">break</span>
+            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range3, <img src="1505574899071.png" />, <img src="1506292276572.png" />, [Res_Iron, Res_Wood]):
+                <span class="kw">break</span>
         Debug.log(<span class="dig">1</span>, <span class="str">"Sending Food to buzuk2"</span>)
-        <span class="kw">while</span> sendRes(region, Range1, <img src="1506034015567.png" />, [Res_Food]):
-            <span class="kw">pass</span>
+        <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">1</span>, <span class="dig">3</span>): <span class="cmt">#Maximum attempts for problem with last caravan</span>
+            <span class="kw">if</span> region.exists(<img src="1504626448184.png" />):
+                <span class="kw">break</span>
+            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range1, <img src="1506034015567.png" />, <img src="1506292348762.png" />, [Res_Food]):
+                <span class="kw">break</span>
     <span class="kw">except</span> FindFailed:
         Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. Image not found in kingdom.sendResources"</span>)
 </pre>

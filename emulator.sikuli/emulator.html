@@ -92,14 +92,17 @@ Emul_Nox = <span class="dig">1</span>
 
 <span class="kw">def</span> runEmulator():
     openApp(<span class="str">"C:\\Program Files (x86)\\Nox\\bin\\Nox.exe"</span>)
-    <span class="skw">sleep</span>(<span class="dig">120</span>)
+    <span class="kw">while</span> True:
+        <span class="skw">sleep</span>(<span class="dig">3</span>)
+        <span class="kw">if</span> exists(<img src="1503271552031.png" />, <span class="dig">1</span>):
+            <span class="kw">break</span>
 
 <span class="kw">def</span> closeEmulator(region):
     topPan = <span class="skw">find</span>(<img src="1505828573090.png" />)
     topPan.<span class="skw">click</span>(<img src="1505689555047.png" />)
     pop = region.<span class="skw">wait</span>(<img src="1505689585796.png" />, <span class="dig">5</span>)
     pop.<span class="skw">click</span>(<img src="1505689610441.png" />)
-    <span class="skw">sleep</span>(<span class="dig">120</span>)
+    <span class="skw">sleep</span>(<span class="dig">30</span>)
 </pre>
 </body>
 </html>
