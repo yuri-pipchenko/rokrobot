@@ -131,12 +131,11 @@ bagResources = [<img src="1504818126267.png" />, <img src="1504818137993.png" />
 <span class="kw">def</span> checkForHints(owner):
     <span class="kw">print</span> <span class="str">"castle.checkForHints call"</span>
     cargo = owner.exists(<img src="1504120900956.png" />, <span class="dig">2</span>)
-    <span class="kw">if</span> cargo != None:
+    <span class="kw">if</span> cargo:
         clickRnd(cargo)
         clickRnd( owner.<span class="skw">wait</span>(<img src="1503303285947.png" />, <span class="dig">2</span>) )
     help = owner.exists(<img src="1504695520824.png" />, <span class="dig">2</span>)
-
-    <span class="kw">if</span> help != None:
+    <span class="kw">if</span> help:
         clickRnd(help)
         <span class="skw">sleep</span>(<span class="dig">2</span>)
 

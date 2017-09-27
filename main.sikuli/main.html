@@ -145,12 +145,15 @@ reload(emulator)
         win = emulator.defineWindow(emulator.Emul_Nox)
         win.highlight(<span class="dig">1</span>)
         runROK(win)
+        Debug.log(<span class="dig">1</span>, <span class="str">"Begin rotating accounts"</span>)
         <span class="kw">for</span> acc <span class="kw">in</span> range(<span class="dig">0</span>, len(accountImages)):
             <span class="kw">try</span>:
                 account.changeAccount(win, accountImages[acc])
+                Debug.log(<span class="dig">1</span>, <span class="str">"Do actions in CASTLE mode"</span>)
                 <span class="kw">if</span> modes.setMode(win, modes.Mode_Castle):
-                    castle.closePopups(win)
+                    closePopups(win)
                     castle.checkForHints(win)
+                Debug.log(<span class="dig">1</span>, <span class="str">"Do actions in MAP mode"</span>)
                 <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
                     kingdom.sendResources(win)
                     kingdom.collectResources(win, accountRes[acc])
@@ -184,7 +187,7 @@ reload(emulator)
 <span class="cmt">#accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]</span>
 
 accountImages = [<img src="1505070277576.png" />, <img src="1505070293164.png" />, <img src="1505070305383.png" />, <img src="1505070319898.png" />, <img src="1505070338301.png" />]
-accountRes    = [kingdom.Res_Wood, kingdom.Res_Wood, kingdom.Res_Wood, kingdom.Res_Food, kingdom.Res_Food]
+accountRes    = [kingdom.Res_Iron, kingdom.Res_Iron, kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food]
 
 
 

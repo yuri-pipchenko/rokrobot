@@ -147,16 +147,19 @@ screenParts = [Region(<span class="dig">1</span>,<span class="dig">1</span>,<spa
     <span class="kw">while</span> True:
         gift = region.exists(<img src="1505549491891.png" />, <span class="dig">1</span>)
         <span class="kw">if</span> gift:
+            Debug.log(<span class="dig">1</span>, <span class="str">"Gift popup found. Closing.."</span>)
             clickRnd( gift.<span class="skw">find</span>(<img src="1505549503977.png" />) )
             <span class="skw">sleep</span>(<span class="dig">2</span>)
             clickRnd( region.<span class="skw">find</span>(<img src="1505549515203.png" />) )
+            Debug.log(<span class="dig">1</span>, <span class="str">"Gift popup is closed."</span>)
             <span class="kw">continue</span>
         levelup = region.exists(<img src="1505547223657.png" />, <span class="dig">1</span>)
         <span class="kw">if</span> levelup:
+            Debug.log(<span class="dig">1</span>, <span class="str">"LevelUp popup found. Closing.."</span>)
             clickRnd( levelup.<span class="skw">find</span>(<img src="1505547235933.png" />) )
             <span class="kw">continue</span>
-        pop = findOneOf(region, [<img src="1505208683882.png" />, <img src="1505425638666.png" />])
-        <span class="kw">if</span> pop == None:
+        <span class="kw">if</span> <span class="kw">not</span> findOneOf(region, [<img src="1505208683882.png" />, <img src="1505425638666.png" />]):
+            Debug.log(<span class="dig">1</span>, <span class="str">"Another single popup found. Closing.."</span>)
             <span class="kw">return</span>()
         <span class="kw">else</span>:
             clickBack()
@@ -167,7 +170,7 @@ screenParts = [Region(<span class="dig">1</span>,<span class="dig">1</span>,<spa
     closePopups(region)
     patt = Pattern(<img src="1505132726391.png" />).similar(<span class="dig">0.95</span>)
 
-    <span class="kw">while</span> region.exists(patt, <span class="dig">4</span>) == None:
+    <span class="kw">while</span> <span class="kw">not</span> region.exists(patt, <span class="dig">4</span>):
         clickBack()
     sleepRnd(<span class="dig">2000</span>)
     <span class="kw">print</span> <span class="str">"common.backToNormalView finished"</span>
@@ -188,7 +191,7 @@ screenParts = [Region(<span class="dig">1</span>,<span class="dig">1</span>,<spa
 <span class="kw">def</span> slowDragDrop(region, beg_point, end_point):
     <span class="kw">print</span> <span class="str">"CALL common.slowDragDrop. Beg point:"</span>, beg_point, <span class="str">"End point:"</span>, end_point
     mmd = Settings.MoveMouseDelay <span class="cmt"># save default/actual value</span>
-    Settings.MoveMouseDelay = <span class="dig">2</span>
+    Settings.MoveMouseDelay = <span class="dig">1</span>
     region.<span class="skw">dragDrop</span>(beg_point, end_point)
     Settings.MoveMouseDelay = mmd
 

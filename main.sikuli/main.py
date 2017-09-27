@@ -73,12 +73,15 @@ def farming():
         win = emulator.defineWindow(emulator.Emul_Nox)    
         win.highlight(1)        
         runROK(win)
+        Debug.log(1, "Begin rotating accounts")
         for acc in range(0, len(accountImages)):
             try:
                 account.changeAccount(win, accountImages[acc])
+                Debug.log(1, "Do actions in CASTLE mode")
                 if modes.setMode(win, modes.Mode_Castle):
-                    castle.closePopups(win)
+                    closePopups(win)
                     castle.checkForHints(win)
+                Debug.log(1, "Do actions in MAP mode")
                 if modes.setMode(win, modes.Mode_Map):
                     kingdom.sendResources(win)
                     kingdom.collectResources(win, accountRes[acc])
@@ -112,7 +115,7 @@ def warMode():
 #accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]
 
 accountImages = ["1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
-accountRes    = [kingdom.Res_Wood, kingdom.Res_Wood, kingdom.Res_Wood, kingdom.Res_Food, kingdom.Res_Food]
+accountRes    = [kingdom.Res_Iron, kingdom.Res_Iron, kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food]
 
 
 

@@ -12,7 +12,8 @@ def waitROKLoad(region):
     else:
         Debug.log("ERROR. Cover is not appeared. Unknown state")
         raise ValueError('Cover is not appear on Game start.')
-    closePopups(region)
+    Debug.log(1, "ROK is successfully loaded")
+#    closePopups(region)
     
 def changeAccount(region, acc):
     Debug.log(1, "CALL account.changeAccount")
@@ -22,10 +23,4 @@ def changeAccount(region, acc):
     clickImagesRnd(region, ["1503304318097.png", "1503304337764.png", "1503304352149.png", "1503304365254.png", acc])
     waitROKLoad(region)
     backToNormalView(region)
-
-def sendResources(region, whom, resKind):
-    Debug.log(1, "CALL acount.sendResources")
-    backToNormalView(region)
-    
-    clickImagesRnd(region, ["1503304318097-1.png", "1503304337764-1.png", "1503304352149-1.png", "1503304365254-1.png", acc])
-
+    Debug.log(1, "account.changeAccount finished")

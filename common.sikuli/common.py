@@ -75,16 +75,19 @@ def closePopups(region):
     while True:
         gift = region.exists("1505549491891.png", 1) 
         if gift:
+            Debug.log(1, "Gift popup found. Closing..")
             clickRnd( gift.find("1505549503977.png") )
             sleep(2)
             clickRnd( region.find("1505549515203.png") )
+            Debug.log(1, "Gift popup is closed.")
             continue
         levelup = region.exists("1505547223657.png", 1)
         if levelup:
+            Debug.log(1, "LevelUp popup found. Closing..")
             clickRnd( levelup.find("1505547235933.png") )
             continue
-        pop = findOneOf(region, ["1505208683882.png", "1505425638666.png"])
-        if pop == None:
+        if not findOneOf(region, ["1505208683882.png", "1505425638666.png"]):
+            Debug.log(1, "Another single popup found. Closing..")
             return()
         else:
             clickBack()
@@ -95,7 +98,7 @@ def backToNormalView(region):
     closePopups(region)
     patt = Pattern("1505132726391.png").similar(0.95)
     
-    while region.exists(patt, 4) == None:
+    while not region.exists(patt, 4):
         clickBack()
     sleepRnd(2000)
     print "common.backToNormalView finished"
@@ -116,7 +119,7 @@ def shiftCoords(coords, shift):
 def slowDragDrop(region, beg_point, end_point):
     print "CALL common.slowDragDrop. Beg point:", beg_point, "End point:", end_point
     mmd = Settings.MoveMouseDelay # save default/actual value
-    Settings.MoveMouseDelay = 2
+    Settings.MoveMouseDelay = 1
     region.dragDrop(beg_point, end_point)    
     Settings.MoveMouseDelay = mmd
 

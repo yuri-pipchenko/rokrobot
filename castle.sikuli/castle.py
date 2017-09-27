@@ -59,12 +59,11 @@ def prepareAnchors():
 def checkForHints(owner):
     print "castle.checkForHints call"
     cargo = owner.exists("1504120900956.png", 2)
-    if cargo != None:
+    if cargo:
         clickRnd(cargo)
         clickRnd( owner.wait("1503303285947.png", 2) )
     help = owner.exists("1504695520824.png", 2)
-    
-    if help != None:
+    if help:
         clickRnd(help)
         sleep(2)
 

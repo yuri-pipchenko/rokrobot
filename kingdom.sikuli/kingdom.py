@@ -258,7 +258,7 @@ def sendRes(region, alRange, memberIcon, memberNamePic, resKinds):
         end_reg = screenPartToRegion(region, 2)
         beg_point = pointRnd(beg_reg)
         end_point = pointRnd(end_reg)
-        region.dragDrop(beg_point, end_point)
+        slowDragDrop(region, beg_point, end_point)
     sleep(2)
         
     if no_member:
@@ -290,16 +290,22 @@ def sendRes(region, alRange, memberIcon, memberNamePic, resKinds):
     
 def sendResources(region):
     Debug.log(1, "CALL kingdom.sendResources")
+    head = Region(region)
+    head.setH(40)
     try:
         Debug.log(1, "Sending Iron and Wood to main Buzuk")
         while True:
-            if region.exists("1504626448184.png"):
+            if region.exists("1504626448184.png", 0):
+                break
+            if head.exists("1506443034118.png", 0) and head.exists("1506443071581.png", 0):
                 break
             if not sendRes(region, Range3, "1505574899071.png", "1506292276572.png", [Res_Iron, Res_Wood]):
                 break
         Debug.log(1, "Sending Food to buzuk2")
         for i in range(1, 3): #Maximum attempts for problem with last caravan
-            if region.exists("1504626448184.png"):
+            if region.exists("1504626448184.png", 0):
+                break
+            if head.exists("1506443543752.png", 0):
                 break
             if not sendRes(region, Range1, "1506034015567.png", "1506292348762.png", [Res_Food]):
                 break

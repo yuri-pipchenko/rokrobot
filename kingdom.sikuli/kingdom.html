@@ -330,7 +330,7 @@ resources = []
         end_reg = screenPartToRegion(region, <span class="dig">2</span>)
         beg_point = pointRnd(beg_reg)
         end_point = pointRnd(end_reg)
-        region.<span class="skw">dragDrop</span>(beg_point, end_point)
+        slowDragDrop(region, beg_point, end_point)
     <span class="skw">sleep</span>(<span class="dig">2</span>)
 
     <span class="kw">if</span> no_member:
@@ -362,16 +362,22 @@ resources = []
 
 <span class="kw">def</span> sendResources(region):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.sendResources"</span>)
+    head = Region(region)
+    head.setH(<span class="dig">40</span>)
     <span class="kw">try</span>:
         Debug.log(<span class="dig">1</span>, <span class="str">"Sending Iron and Wood to main Buzuk"</span>)
         <span class="kw">while</span> True:
-            <span class="kw">if</span> region.exists(<img src="1504626448184.png" />):
+            <span class="kw">if</span> region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>):
+                <span class="kw">break</span>
+            <span class="kw">if</span> head.exists(<img src="1506443034118.png" />, <span class="dig">0</span>) <span class="kw">and</span> head.exists(<img src="1506443071581.png" />, <span class="dig">0</span>):
                 <span class="kw">break</span>
             <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range3, <img src="1505574899071.png" />, <img src="1506292276572.png" />, [Res_Iron, Res_Wood]):
                 <span class="kw">break</span>
         Debug.log(<span class="dig">1</span>, <span class="str">"Sending Food to buzuk2"</span>)
         <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">1</span>, <span class="dig">3</span>): <span class="cmt">#Maximum attempts for problem with last caravan</span>
-            <span class="kw">if</span> region.exists(<img src="1504626448184.png" />):
+            <span class="kw">if</span> region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>):
+                <span class="kw">break</span>
+            <span class="kw">if</span> head.exists(<img src="1506443543752.png" />, <span class="dig">0</span>):
                 <span class="kw">break</span>
             <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range1, <img src="1506034015567.png" />, <img src="1506292348762.png" />, [Res_Food]):
                 <span class="kw">break</span>
