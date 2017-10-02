@@ -34,7 +34,7 @@ def getProps():
 
 def runROK(win):
    win.click("1505205538684.png")
-   account.waitROKLoad(win)
+   return account.waitROKLoad(win)
 
 def closeROK(win):
     win.right(50).click("1505205664308.png")
@@ -71,26 +71,29 @@ def farming():
     while True:
         emulator.runEmulator()
         win = emulator.defineWindow(emulator.Emul_Nox)    
-        win.highlight(1)        
-        runROK(win)
-        Debug.log(1, "Begin rotating accounts")
-        for acc in range(0, len(accountImages)):
-            try:
-                account.changeAccount(win, accountImages[acc])
-                Debug.log(1, "Do actions in CASTLE mode")
-                if modes.setMode(win, modes.Mode_Castle):
-                    closePopups(win)
-                    castle.checkForHints(win)
-                Debug.log(1, "Do actions in MAP mode")
-                if modes.setMode(win, modes.Mode_Map):
-                    kingdom.sendResources(win)
-                    kingdom.collectResources(win, accountRes[acc])
-            except FindFailed:
-                Debug.log(1, "EXCEPTION. FindFailed")
-                continue
-            except ValueError:
-                Debug.log(1, "EXCEPTION. UnknownGameState")
-                break
+        win.highlight(1)
+        if runROK(win):
+            Debug.log(1, "Begin rotating accounts")
+            for acc in range(0, len(accountImages)):
+                try:
+                    account.changeAccount(win, accountImages[acc])
+                    Debug.log(1, "Do actions in CASTLE mode")
+                    if modes.setMode(win, modes.Mode_Castle):
+                        closePopups(win)
+                        castle.checkForHints(win)
+                    Debug.log(1, "Do actions in MAP mode")
+                    if modes.setMode(win, modes.Mode_Map):
+                        kingdom.sendResources(win)
+                        kingdom.collectResources(win, accountRes[acc])
+                except FindFailed:
+                    Debug.log(1, "EXCEPTION. FindFailed")
+                    continue
+                except ValueError:
+                    Debug.log(1, "EXCEPTION. UnknownGameState")
+                    break
+        else:
+            Debug.log(1, "Game is not started. Try later..")
+            sleep(300)
         emulator.closeEmulator(win)
     Debug.log(1, "---- FARMING FINISHED ----")
 
@@ -109,13 +112,16 @@ def warMode():
                 continue
         closeROK(win)
 
-
+def adjustWinSize(win):
+    p1 = win.getBottomRight()
+    p2 = Location(p1.x + 546 - win.w, p1.y + 969 - win.h)
+    slowDragDrop(win, p1, p2)
 
 #accountImages = ["1505069619124.png", "1505070250701.png", "1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
 #accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]
 
-accountImages = ["1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
-accountRes    = [kingdom.Res_Iron, kingdom.Res_Iron, kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food]
+accountImages = ["1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
+accountRes    = [kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
 
 
 
@@ -130,14 +136,21 @@ while False:
     sleep(20)
 
 #kingdom.occupyRuins(win)
-#kingdom.collectResources(win, kingdom.Res_Food)
 #dailyRoutine()
-farming()
+#farming()
 #warMode()
+win = emulator.defineWindow(emulator.Emul_Nox)    
+win.highlight(2)
+print "Emulator demensions:", win.w, win.h
+
+#adjustWinSize(win)
 #win = emulator.defineWindow(emulator.Emul_Nox)    
 #win.highlight(2)
+
+castle.clearFarms(win)
+#ingdom.collectResources(win, kingdom.resSet1)
 #kingdom.sendResources(win)
-#print "Emulator demensions:", win.w, win.h
+print "Emulator demensions:", win.w, win.h
 #Correct size: 546x969
 #castle.dragonChallenge(win)
 #castle.clearBag(win)

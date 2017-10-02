@@ -79,12 +79,16 @@
     cover = region.exists(<img src="1505555097635.png" />, <span class="dig">60</span>)
     <span class="kw">if</span> cover:
         Debug.log(<span class="str">"Waiting for cover is closed"</span>)
-        cover.grow(<span class="dig">50</span>).waitVanish(<img src="1505555404394.png" />, <span class="dig">60</span>)
-        <span class="skw">sleep</span>(<span class="dig">10</span>)
+        <span class="kw">if</span> cover.grow(<span class="dig">50</span>).waitVanish(<img src="1505555404394.png" />, <span class="dig">60</span>):
+            Debug.log(<span class="dig">1</span>, <span class="str">"ROK is successfully loaded"</span>)
+            <span class="skw">sleep</span>(<span class="dig">10</span>)
+            <span class="kw">return</span> True
+        <span class="kw">else</span>:
+            Debug.log(<span class="dig">1</span>, <span class="str">"Cover is not disappearing on Game start. Possible server update.."</span>)
+            <span class="kw">return</span> False
     <span class="kw">else</span>:
         Debug.log(<span class="str">"ERROR. Cover is not appeared. Unknown state"</span>)
-        <span class="kw">raise</span> ValueError(<span class="str">'Cover is not appear on Game start.'</span>)
-    Debug.log(<span class="dig">1</span>, <span class="str">"ROK is successfully loaded"</span>)
+        <span class="kw">return</span> False
 <span class="cmt">#    closePopups(region)</span>
 
 <span class="kw">def</span> changeAccount(region, acc):
@@ -92,7 +96,7 @@
     backToNormalView(region)
 
     clickPersonRnd(region)
-    clickImagesRnd(region, [<img src="1503304318097.png" />, <img src="1503304337764.png" />, <img src="1503304352149.png" />, <img src="1503304365254.png" />, acc])
+    clickImagesRnd(region, [<img src="1503304318097.png" />, <img src="1503304337764.png" />, <img src="1503304352149.png" />, <img src="1506594490858.png" />, acc])
     waitROKLoad(region)
     backToNormalView(region)
     Debug.log(<span class="dig">1</span>, <span class="str">"account.changeAccount finished"</span>)

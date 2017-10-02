@@ -88,19 +88,23 @@ Pos_Wall     = <span class="dig">9</span>
 Pos_Keystone = <span class="dig">10</span>
 Pos_Zeppelin = <span class="dig">11</span>
 Pos_Exchange = <span class="dig">12</span>
+Pos_Farms1   = <span class="dig">13</span> <span class="cmt"># No image for this position</span>
+Pos_Farms2   = <span class="dig">14</span> <span class="cmt"># No image for this position</span>
 
 anchors = []
 
 anchorImages = [<img src="1504120963638.png" />, <img src="1504121063996.png" />, <img src="1504121099282.png" />, <img src="1504121151165.png" />, <img src="1504121222509.png" />,
                 <img src="1504176100796.png" />, <img src="1504121301157.png" />, <img src="1504121322775.png" />, <img src="1504121347061.png" />, <img src="1504121369569.png" />,
-                <img src="1504121399320.png" />, <img src="1504121430441.png" />, <img src="1505574509235.png" />]
+                <img src="1504121399320.png" />, <img src="1504121430441.png" />, <img src="1505574509235.png" />, <span class="str">""</span>, <span class="str">""</span>]
 
 anchorOffsets = [Location(<span class="dig">0</span>,<span class="dig">0</span>), Location(<span class="dig">272</span>,-<span class="dig">193</span>), Location(<span class="dig">471</span>,-<span class="dig">126</span>), Location(-<span class="dig">263</span>,-<span class="dig">163</span>), Location(<span class="dig">158</span>,-<span class="dig">39</span>),
                  Location(-<span class="dig">292</span>,<span class="dig">11</span>), Location(-<span class="dig">300</span>,<span class="dig">192</span>), Location(-<span class="dig">185</span>,<span class="dig">142</span>), Location(-<span class="dig">435</span>,<span class="dig">24</span>), Location(<span class="dig">221</span>, <span class="dig">202</span>),
-                 Location(<span class="dig">745</span>,<span class="dig">471</span>), Location(<span class="dig">404</span>,-<span class="dig">191</span>), Location(<span class="dig">251</span>, -<span class="dig">92</span>)]
+                 Location(<span class="dig">745</span>,<span class="dig">471</span>), Location(<span class="dig">404</span>,-<span class="dig">191</span>), Location(<span class="dig">251</span>, -<span class="dig">92</span>), Location(<span class="dig">488</span>, <span class="dig">371</span>), Location(<span class="dig">778</span>, <span class="dig">124</span>)]
 
 bagResources = [<img src="1504818126267.png" />, <img src="1504818137993.png" />, <img src="1504818150387.png" />, <img src="1504819557678.png" />, <img src="1504818162044.png" />, <img src="1504818171169.png" />, <img src="1504818180876.png" />, <img src="1504818190363.png" />, <img src="1504818205776.png" />, <img src="1504818218244.png" />,
                 <img src="1504818231664.png" />, <img src="1504818243413.png" />, <img src="1504818289542.png" />, <img src="1504818760493.png" />, <img src="1504818770714.png" />, <img src="1504818780465.png" />, <img src="1504818813360.png" />, <img src="1504818825413.png" />, <img src="1504818834752.png" />, <img src="1504818865969.png" />]
+
+farmImages = [<img src="1506944719575.png" />, <img src="1506944746211.png" />, <img src="1506944774051.png" />]
 
 <span class="kw">class</span> Anchor(object):
     mImg = None
@@ -210,6 +214,7 @@ bagResources = [<img src="1504818126267.png" />, <img src="1504818137993.png" />
                 fire = owner.exists(<img src="1503398071679.png" />, <span class="dig">2</span>)
                 <span class="kw">if</span> fire:
                     clickRnd(fire)
+                <span class="skw">sleep</span>(<span class="dig">7</span>)
                 <span class="kw">while</span> findOneOf(owner, [<img src="1503401790750.png" />,
                     <img src="1503303641987.png" />,
                     <img src="1503303905110.png" />,
@@ -218,7 +223,12 @@ bagResources = [<img src="1504818126267.png" />, <img src="1504818137993.png" />
                         clickBack()
                         <span class="skw">sleep</span>(<span class="dig">1</span>)
         clickBack()
-        clickImagesRnd(owner, [<img src="1505426172474.png" />, <img src="1505426273902.png" />, <img src="1505426300565.png" />])
+        Debug.log(<span class="dig">1</span>, <span class="str">"Treating the troops"</span>)
+        clickRnd( <span class="skw">find</span>(<img src="1505426172474.png" />) )
+        <span class="kw">if</span> owner.exists(<img src="1506636887579.png" />, <span class="dig">1</span>):
+            Debug.log(<span class="dig">1</span>, <span class="str">"Troops are in hospital already"</span>)
+            clickBack()
+        clickImagesRnd(owner, [<img src="1505426273902.png" />, <img src="1505426300565.png" />])
     <span class="kw">except</span> FindFailed:
         <span class="kw">print</span> <span class="str">"ERROR. Something wrong on threat troops at Dragon Challenge"</span>
     clickBackN(<span class="dig">2</span>)
@@ -231,25 +241,27 @@ bagResources = [<img src="1504818126267.png" />, <img src="1504818137993.png" />
     clickImagesRnd(owner, [<img src="1504525543350.png" />, <img src="1505126562813.png" />])
 
     <span class="skw">sleep</span>(<span class="dig">5</span>)
-    beg_free = owner.exists(<img src="1503611041801.png" />, <span class="dig">1</span>)
-    <span class="kw">if</span> beg_free == None:
-        clickBack()
-        <span class="kw">return</span>()
-    clickRnd(beg_free)
-    <span class="kw">while</span> True:
-        reject = exists(<img src="1504764983306.png" />, <span class="dig">3</span>)
-
-        <span class="kw">if</span> reject != None:
-            clickBackN(<span class="dig">2</span>)
+    <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">5</span>):
+        beg_free = owner.exists(<img src="1503611041801.png" />, <span class="dig">1</span>)
+        <span class="kw">if</span> beg_free == None:
+            clickBack()
             <span class="kw">return</span>()
-        cubes = owner.exists(<img src="1503611083109.png" />, <span class="dig">3</span>)
-        <span class="kw">if</span> cubes != None:
-            clickRnd( cubes.above(<span class="dig">100</span>) )
-            <span class="skw">sleep</span>(<span class="dig">10</span>)
-        <span class="kw">else</span>:
-            <span class="kw">break</span>
-    clickRnd( owner.<span class="skw">wait</span>(<img src="1503612318821.png" />, <span class="dig">2</span>) )
-    <span class="skw">sleep</span>(<span class="dig">5</span>)
+        clickRnd(beg_free)
+        <span class="kw">while</span> True:
+            reject = owner.exists(<img src="1504764983306.png" />, <span class="dig">3</span>) <span class="cmt">#No coins to continue</span>
+            <span class="kw">if</span> reject != None:
+                clickBackN(<span class="dig">2</span>)
+                <span class="kw">return</span>()
+            <span class="kw">if</span> owner.exists(Pattern(<img src="1505132726391.png" />).similar(<span class="dig">0.95</span>)): <span class="cmt">#Maximum attempts achieved</span>
+                <span class="kw">return</span>()
+            cubes = owner.exists(<img src="1503611083109.png" />, <span class="dig">3</span>)
+            <span class="kw">if</span> cubes != None:
+                clickRnd( cubes.above(<span class="dig">100</span>) )
+                <span class="skw">sleep</span>(<span class="dig">10</span>)
+            <span class="kw">else</span>:
+                <span class="kw">break</span>
+        clickRnd( owner.<span class="skw">wait</span>(<img src="1503612318821.png" />, <span class="dig">2</span>) )
+        <span class="skw">sleep</span>(<span class="dig">5</span>)
     clickBack()
     <span class="kw">print</span> <span class="str">"castle.treasury finished"</span>
 
@@ -286,26 +298,46 @@ bagResources = [<img src="1504818126267.png" />, <img src="1504818137993.png" />
         <span class="kw">for</span> img <span class="kw">in</span> resImages:
             useBagResource(owner, img)
         <span class="kw">if</span> i &lt; <span class="dig">3</span>:
-            beg_reg = screenPartToRegion(inner_reg, <span class="dig">6</span>)
-            end_reg = screenPartToRegion(inner_reg, <span class="dig">2</span>)
-            closePopups(owner)
-            beg_point = pointRnd(beg_reg)
-            end_point = pointRnd(end_reg)
-            owner.<span class="skw">dragDrop</span>(beg_point, end_point)
+            moveByParts(owner, <span class="dig">6</span>, <span class="dig">2</span>)
     <span class="kw">print</span> <span class="str">"castle.useBagResources finished"</span>
 
-<span class="kw">def</span> clearBag(owner):
+<span class="kw">def</span> clearBag(region):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL castle.clearBag"</span>)
-    closePopups(owner)
-    clickRnd( owner.<span class="skw">find</span>(<img src="1504800698750.png" />) )
+    closePopups(region)
+    clickRnd( region.<span class="skw">find</span>(<img src="1504800698750.png" />) )
+    <span class="skw">sleep</span>(<span class="dig">3</span>)
+    clickBack()
     <span class="skw">sleep</span>(<span class="dig">2</span>)
+    clickRnd( region.<span class="skw">find</span>(<img src="1504800698750.png" />) )
+    useBagResources(rigion, bagResources)
     clickBack()
-    clickRnd( owner.<span class="skw">find</span>(<img src="1504800698750.png" />) )
-    useBagResources(owner, bagResources)
-    clickBack()
-    <span class="kw">print</span> <span class="str">"castle.clearBag finished"</span>
+    Debug.log(<span class="dig">1</span>, <span class="str">"castle.clearBag finished"</span>)
 
+<span class="kw">def</span> findFarms(region):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL castle.findFarms"</span>)
+    res = []
+    region.setFindFailedResponse(SKIP)
+    <span class="kw">for</span> i <span class="kw">in</span> farmImages:
+        Debug.log(<span class="dig">1</span>, <span class="str">"Trying to find farm %1$s"</span>, i)
+        tiles = region.findAll(i)
+        <span class="kw">if</span> tiles:
+            Debug.log(<span class="dig">1</span>, <span class="str">"Farms found"</span>)
+            res.extend(tiles)
+    region.setFindFailedResponse(ABORT)
+    <span class="kw">return</span> res
 
+<span class="kw">def</span> clearFarms(region):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL castle.clearFarms"</span>)
+    closePopups(region)
+    locate(region, Pos_Farms1)
+    checkForHints(region)
+    <span class="kw">for</span> f <span class="kw">in</span> findFarms(region):
+        clickRnd(f)
+    locate(region, Pos_Farms2)
+    checkForHints(region)
+    <span class="kw">for</span> f <span class="kw">in</span> findFarms(region):
+        clickRnd(f)
+    Debug.log(<span class="dig">1</span>, <span class="str">"castle.clearFarms finished"</span>)
 
 forFuture = [<img src="1504800889579.png" />, <img src="1504801297878.png" />, <img src="1504801315145.png" />, <img src="1504801496648.png" />, <img src="1504801572720.png" />, <img src="1504801619073.png" />, <img src="1504801639638.png" />, <img src="1505546729697.png" />, <img src="1505547223657.png" />, <img src="1505547235933.png" />, <img src="1505549564410.png" />]
 

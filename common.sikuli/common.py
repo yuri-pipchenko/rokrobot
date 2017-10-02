@@ -61,37 +61,38 @@ def screenPartToRegion(region, part_idx):
     return shifted
 
 def findOneOf(region, images):
-    Debug.log(1, "CALL common.findOneOf")
+    Debug.log(1, "CALL common.findOneOf %1$s", images)
     for i in images:
-        res = region.exists(i, 2)
+        res = region.exists(i, 0)
         if res:
-            print "common.findOneOf finished. Found image:", i, res
+            Debug.log(1, "Found image: %1$s %2$s", [i, res])
             return res
-    print "common.findOneOf finished. No images found"
+    Debug.log(1, "No images found")
     return None
 
 def closePopups(region):
     Debug.log(1, "CALL common.closePopups")
     while True:
-        gift = region.exists("1505549491891.png", 1) 
+        gift = region.exists("1505549491891.png", 0) 
         if gift:
             Debug.log(1, "Gift popup found. Closing..")
             clickRnd( gift.find("1505549503977.png") )
             sleep(2)
             clickRnd( region.find("1505549515203.png") )
             Debug.log(1, "Gift popup is closed.")
+            sleep(3)
             continue
-        levelup = region.exists("1505547223657.png", 1)
+        levelup = region.exists("1505547223657.png", 0)
         if levelup:
             Debug.log(1, "LevelUp popup found. Closing..")
             clickRnd( levelup.find("1505547235933.png") )
             continue
-        if not findOneOf(region, ["1505208683882.png", "1505425638666.png"]):
+        if findOneOf(region, ["1505208683882.png", "1505425638666.png"]):
             Debug.log(1, "Another single popup found. Closing..")
-            return()
-        else:
             clickBack()
             sleep(2)
+        else:
+            return()
 
 def backToNormalView(region):
     Debug.log(1, "CALL common.backToNormalView")
@@ -111,9 +112,12 @@ def coordInList(coord_list, coord):
     return False
 
 def shiftCoords(coords, shift):
+    Debug.log(1, "CALL common.shiftCoords, shift: %1$s", shift)
     result = []
     for c in coords:
-        result.append( Location(c.x + shift.x, c.y + shift.y) )
+        loc = Location(c.x + shift.x, c.y + shift.y)
+        Debug.log(1, "shift point. Old: %1$s, New: %2$s", [c, loc])
+        result.append( loc )
     return result
 
 def slowDragDrop(region, beg_point, end_point):
@@ -135,3 +139,10 @@ def precise(image):
     patt = Pattern(image)
     return patt.similar(0.95)
 
+def moveByParts(region, begPart, endPart):
+    beg_reg = screenPartToRegion(region, begPart)
+    end_reg = screenPartToRegion(region, endPart)
+    beg_point = pointRnd(beg_reg)
+    end_point = pointRnd(end_reg)
+    closePopups(region)
+    slowDragDrop(region, beg_point, end_point)

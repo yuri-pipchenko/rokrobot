@@ -16,19 +16,23 @@ Pos_Wall     = 9
 Pos_Keystone = 10
 Pos_Zeppelin = 11
 Pos_Exchange = 12
+Pos_Farms1   = 13 # No image for this position
+Pos_Farms2   = 14 # No image for this position
 
 anchors = []
 
 anchorImages = ["1504120963638.png", "1504121063996.png", "1504121099282.png", "1504121151165.png", "1504121222509.png",
                 "1504176100796.png", "1504121301157.png", "1504121322775.png", "1504121347061.png", "1504121369569.png",
-                "1504121399320.png", "1504121430441.png", "1505574509235.png"]
+                "1504121399320.png", "1504121430441.png", "1505574509235.png", "", ""]
 
 anchorOffsets = [Location(0,0), Location(272,-193), Location(471,-126), Location(-263,-163), Location(158,-39),
                  Location(-292,11), Location(-300,192), Location(-185,142), Location(-435,24), Location(221, 202),
-                 Location(745,471), Location(404,-191), Location(251, -92)]
+                 Location(745,471), Location(404,-191), Location(251, -92), Location(488, 371), Location(778, 124)]
 
 bagResources = ["1504818126267.png", "1504818137993.png", "1504818150387.png", "1504819557678.png", "1504818162044.png", "1504818171169.png", "1504818180876.png", "1504818190363.png", "1504818205776.png", "1504818218244.png",
                 "1504818231664.png", "1504818243413.png", "1504818289542.png", "1504818760493.png", "1504818770714.png", "1504818780465.png", "1504818813360.png", "1504818825413.png", "1504818834752.png", "1504818865969.png"]
+
+farmImages = ["1506944719575.png", "1506944746211.png", "1506944774051.png"]
 
 class Anchor(object):
     mImg = None
@@ -138,6 +142,7 @@ def dragonChallenge(owner):
                 fire = owner.exists("1503398071679.png", 2)
                 if fire:
                     clickRnd(fire)
+                sleep(7)
                 while findOneOf(owner, ["1503401790750.png",
                     "1503303641987.png",
                     "1503303905110.png",
@@ -146,7 +151,12 @@ def dragonChallenge(owner):
                         clickBack()
                         sleep(1)
         clickBack()
-        clickImagesRnd(owner, ["1505426172474.png", "1505426273902.png", "1505426300565.png"])
+        Debug.log(1, "Treating the troops")
+        clickRnd( find("1505426172474.png") )
+        if owner.exists("1506636887579.png", 1):
+            Debug.log(1, "Troops are in hospital already")
+            clickBack()
+        clickImagesRnd(owner, ["1505426273902.png", "1505426300565.png"])
     except FindFailed:
         print "ERROR. Something wrong on threat troops at Dragon Challenge"
     clickBackN(2)
@@ -159,25 +169,27 @@ def treasury(owner):
     clickImagesRnd(owner, ["1504525543350.png", "1505126562813.png"])
     
     sleep(5)
-    beg_free = owner.exists("1503611041801.png", 1)
-    if beg_free == None:
-        clickBack()
-        return()
-    clickRnd(beg_free)
-    while True:
-        reject = exists("1504764983306.png", 3)
-        
-        if reject != None:
-            clickBackN(2)
+    for i in range(0, 5):       
+        beg_free = owner.exists("1503611041801.png", 1)
+        if beg_free == None:
+            clickBack()
             return()
-        cubes = owner.exists("1503611083109.png", 3)
-        if cubes != None:
-            clickRnd( cubes.above(100) )
-            sleep(10)
-        else:
-            break
-    clickRnd( owner.wait("1503612318821.png", 2) )
-    sleep(5)
+        clickRnd(beg_free)
+        while True:
+            reject = owner.exists("1504764983306.png", 3) #No coins to continue
+            if reject != None:
+                clickBackN(2)
+                return()
+            if owner.exists(Pattern("1505132726391.png").similar(0.95)): #Maximum attempts achieved
+                return()
+            cubes = owner.exists("1503611083109.png", 3)
+            if cubes != None:
+                clickRnd( cubes.above(100) )
+                sleep(10)
+            else:
+                break
+        clickRnd( owner.wait("1503612318821.png", 2) )
+        sleep(5)
     clickBack()
     print "castle.treasury finished"
 
@@ -214,26 +226,46 @@ def useBagResources(owner, resImages):
         for img in resImages:
             useBagResource(owner, img)
         if i < 3:
-            beg_reg = screenPartToRegion(inner_reg, 6)
-            end_reg = screenPartToRegion(inner_reg, 2)
-            closePopups(owner)
-            beg_point = pointRnd(beg_reg)
-            end_point = pointRnd(end_reg)
-            owner.dragDrop(beg_point, end_point)
+            moveByParts(owner, 6, 2)
     print "castle.useBagResources finished"
 
-def clearBag(owner):
+def clearBag(region):
     Debug.log(1, "CALL castle.clearBag")
-    closePopups(owner)
-    clickRnd( owner.find("1504800698750.png") )
+    closePopups(region)
+    clickRnd( region.find("1504800698750.png") )
+    sleep(3)
+    clickBack()
     sleep(2)
+    clickRnd( region.find("1504800698750.png") )
+    useBagResources(rigion, bagResources)
     clickBack()
-    clickRnd( owner.find("1504800698750.png") )
-    useBagResources(owner, bagResources)
-    clickBack()
-    print "castle.clearBag finished"
+    Debug.log(1, "castle.clearBag finished")
 
+def findFarms(region):
+    Debug.log(1, "CALL castle.findFarms")
+    res = []
+    region.setFindFailedResponse(SKIP)
+    for i in farmImages:
+        Debug.log(1, "Trying to find farm %1$s", i)
+        tiles = region.findAll(i)
+        if tiles:
+            Debug.log(1, "Farms found")
+            res.extend(tiles)
+    region.setFindFailedResponse(ABORT)
+    return res    
 
+def clearFarms(region):
+    Debug.log(1, "CALL castle.clearFarms")
+    closePopups(region)
+    locate(region, Pos_Farms1)
+    checkForHints(region)
+    for f in findFarms(region):
+        clickRnd(f)
+    locate(region, Pos_Farms2)
+    checkForHints(region)
+    for f in findFarms(region):
+        clickRnd(f)
+    Debug.log(1, "castle.clearFarms finished")
 
 forFuture = ["1504800889579.png", "1504801297878.png", "1504801315145.png", "1504801496648.png", "1504801572720.png", "1504801619073.png", "1504801639638.png", "1505546729697.png", "1505547223657.png", "1505547235933.png", "1505549564410.png"]
 

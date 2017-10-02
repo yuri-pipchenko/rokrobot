@@ -133,37 +133,38 @@ screenParts = [Region(<span class="dig">1</span>,<span class="dig">1</span>,<spa
     <span class="kw">return</span> shifted
 
 <span class="kw">def</span> findOneOf(region, images):
-    Debug.log(<span class="dig">1</span>, <span class="str">"CALL common.findOneOf"</span>)
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL common.findOneOf %1$s"</span>, images)
     <span class="kw">for</span> i <span class="kw">in</span> images:
-        res = region.exists(i, <span class="dig">2</span>)
+        res = region.exists(i, <span class="dig">0</span>)
         <span class="kw">if</span> res:
-            <span class="kw">print</span> <span class="str">"common.findOneOf finished. Found image:"</span>, i, res
+            Debug.log(<span class="dig">1</span>, <span class="str">"Found image: %1$s %2$s"</span>, [i, res])
             <span class="kw">return</span> res
-    <span class="kw">print</span> <span class="str">"common.findOneOf finished. No images found"</span>
+    Debug.log(<span class="dig">1</span>, <span class="str">"No images found"</span>)
     <span class="kw">return</span> None
 
 <span class="kw">def</span> closePopups(region):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL common.closePopups"</span>)
     <span class="kw">while</span> True:
-        gift = region.exists(<img src="1505549491891.png" />, <span class="dig">1</span>)
+        gift = region.exists(<img src="1505549491891.png" />, <span class="dig">0</span>)
         <span class="kw">if</span> gift:
             Debug.log(<span class="dig">1</span>, <span class="str">"Gift popup found. Closing.."</span>)
             clickRnd( gift.<span class="skw">find</span>(<img src="1505549503977.png" />) )
             <span class="skw">sleep</span>(<span class="dig">2</span>)
             clickRnd( region.<span class="skw">find</span>(<img src="1505549515203.png" />) )
             Debug.log(<span class="dig">1</span>, <span class="str">"Gift popup is closed."</span>)
+            <span class="skw">sleep</span>(<span class="dig">3</span>)
             <span class="kw">continue</span>
-        levelup = region.exists(<img src="1505547223657.png" />, <span class="dig">1</span>)
+        levelup = region.exists(<img src="1505547223657.png" />, <span class="dig">0</span>)
         <span class="kw">if</span> levelup:
             Debug.log(<span class="dig">1</span>, <span class="str">"LevelUp popup found. Closing.."</span>)
             clickRnd( levelup.<span class="skw">find</span>(<img src="1505547235933.png" />) )
             <span class="kw">continue</span>
-        <span class="kw">if</span> <span class="kw">not</span> findOneOf(region, [<img src="1505208683882.png" />, <img src="1505425638666.png" />]):
+        <span class="kw">if</span> findOneOf(region, [<img src="1505208683882.png" />, <img src="1505425638666.png" />]):
             Debug.log(<span class="dig">1</span>, <span class="str">"Another single popup found. Closing.."</span>)
-            <span class="kw">return</span>()
-        <span class="kw">else</span>:
             clickBack()
             <span class="skw">sleep</span>(<span class="dig">2</span>)
+        <span class="kw">else</span>:
+            <span class="kw">return</span>()
 
 <span class="kw">def</span> backToNormalView(region):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL common.backToNormalView"</span>)
@@ -183,9 +184,12 @@ screenParts = [Region(<span class="dig">1</span>,<span class="dig">1</span>,<spa
     <span class="kw">return</span> False
 
 <span class="kw">def</span> shiftCoords(coords, shift):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL common.shiftCoords, shift: %1$s"</span>, shift)
     result = []
     <span class="kw">for</span> c <span class="kw">in</span> coords:
-        result.append( Location(c.x + shift.x, c.y + shift.y) )
+        loc = Location(c.x + shift.x, c.y + shift.y)
+        Debug.log(<span class="dig">1</span>, <span class="str">"shift point. Old: %1$s, New: %2$s"</span>, [c, loc])
+        result.append( loc )
     <span class="kw">return</span> result
 
 <span class="kw">def</span> slowDragDrop(region, beg_point, end_point):
@@ -206,6 +210,14 @@ screenParts = [Region(<span class="dig">1</span>,<span class="dig">1</span>,<spa
 <span class="kw">def</span> precise(image):
     patt = Pattern(image)
     <span class="kw">return</span> patt.similar(<span class="dig">0.95</span>)
+
+<span class="kw">def</span> moveByParts(region, begPart, endPart):
+    beg_reg = screenPartToRegion(region, begPart)
+    end_reg = screenPartToRegion(region, endPart)
+    beg_point = pointRnd(beg_reg)
+    end_point = pointRnd(end_reg)
+    closePopups(region)
+    slowDragDrop(region, beg_point, end_point)
 </pre>
 </body>
 </html>
