@@ -56,7 +56,10 @@ def dailyRoutine():
                 castle.dragonChallenge(win)
                 castle.treasury(win)
                 castle.clearBag(win)
-            castle.checkForHints(win)
+                castle.useFountain(win, kingdom.Res_Iron)
+                castle.checkForHints(win)
+                castle.clearFarms(win)
+                kingdom.obtainGifts(win)
         except FindFailed:
             Debug.log(1, "EXCEPTION. FindFailed")
             continue
@@ -85,6 +88,8 @@ def farming():
                     if modes.setMode(win, modes.Mode_Map):
                         kingdom.sendResources(win)
                         kingdom.collectResources(win, accountRes[acc])
+                        kingdom.returnCamps(win)
+                        kingdom.obtainGifts(win)
                 except FindFailed:
                     Debug.log(1, "EXCEPTION. FindFailed")
                     continue
@@ -137,20 +142,21 @@ while False:
 
 #kingdom.occupyRuins(win)
 #dailyRoutine()
-#farming()
+farming()
 #warMode()
-win = emulator.defineWindow(emulator.Emul_Nox)    
-win.highlight(2)
-print "Emulator demensions:", win.w, win.h
+#win = emulator.defineWindow(emulator.Emul_Nox)    
+#win.highlight(2)
+#print "Emulator demensions:", win.w, win.h
 
+#castle.useFountain(win, kingdom.Res_Iron)
 #adjustWinSize(win)
 #win = emulator.defineWindow(emulator.Emul_Nox)    
 #win.highlight(2)
 
-castle.clearFarms(win)
+#castle.clearFarms(win)
 #ingdom.collectResources(win, kingdom.resSet1)
 #kingdom.sendResources(win)
-print "Emulator demensions:", win.w, win.h
+#print "Emulator demensions:", win.w, win.h
 #Correct size: 546x969
 #castle.dragonChallenge(win)
 #castle.clearBag(win)

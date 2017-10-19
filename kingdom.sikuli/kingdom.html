@@ -290,8 +290,11 @@ resources = []
         moveRnd(region, [])
 
 <span class="kw">def</span> returnCamps(region):
-    <span class="kw">print</span> <span class="str">"kingdom.returnCamps call"</span>
+    Debug.log(<span class="dig">1</span>, <span class="str">"kingdom.returnCamps call"</span>)
     backToNormalView(region)
+    more = region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>)
+    <span class="kw">if</span> more:
+        clickRnd(more)
     <span class="kw">try</span>:
         <span class="kw">for</span> b <span class="kw">in</span> region.findAll( precise(<img src="1505250782722.png" />)):
             <span class="kw">print</span> <span class="str">"Back button checking"</span>
@@ -410,7 +413,7 @@ resources = []
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.sendResources"</span>)
     <span class="kw">try</span>:
         Debug.log(<span class="dig">1</span>, <span class="str">"Sending Iron and Wood to main Buzuk"</span>)
-        <span class="kw">while</span> True:
+        <span class="kw">while</span> False:
             <span class="kw">if</span> region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>):
                 <span class="kw">break</span>
             <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range4, <img src="1506553279198.png" />, <img src="1506292276572.png" />, [Res_Iron, Res_Wood]):
@@ -419,10 +422,26 @@ resources = []
         <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">3</span>): <span class="cmt">#Maximum attempts for problem with last caravan</span>
             <span class="kw">if</span> region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>):
                 <span class="kw">break</span>
-            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range2, <img src="1506528760102.png" />, <img src="1506528776655.png" />, [Res_Food]):
+            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range2, <img src="1506528760102.png" />, <img src="1506528776655.png" />, [Res_Iron, Res_Wood, Res_Food]):
                 <span class="kw">break</span>
     <span class="kw">except</span> FindFailed:
         Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. Image not found in kingdom.sendResources"</span>)
+
+<span class="kw">def</span> obtainGifts(region):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.obtainGifts"</span>)
+    <span class="kw">try</span>:
+        clickRnd( region.<span class="skw">find</span>(<img src="1507130336689.png" />) )
+        <span class="kw">while</span> True:
+                btn = region.exists( Pattern(<img src="1507130453183.png" />).similar(<span class="dig">0.90</span>) )
+                <span class="kw">if</span> btn:
+                    clickRnd(btn)
+                    <span class="skw">sleep</span>(<span class="dig">4</span>)
+                <span class="kw">else</span>:
+                    <span class="kw">break</span>
+        clickBack()
+    <span class="kw">except</span> FindFailed:
+        Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. Image not found in kingdom.sendResources"</span>)
+    Debug.log(<span class="dig">1</span>, <span class="str">"kingdom.obtainGifts finished"</span>)
 </pre>
 </body>
 </html>

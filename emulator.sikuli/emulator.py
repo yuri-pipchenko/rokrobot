@@ -28,7 +28,7 @@ def runEmulator():
 def closeEmulator(region):
     topPan = find("1505828573090.png")
     topPan.click("1505689555047.png")
-    pop = region.wait("1505689585796.png", 5)
+    pop = region.wait("1505689585796.png", 15)
     pop.click("1505689610441.png")   
     sleep(30)
 

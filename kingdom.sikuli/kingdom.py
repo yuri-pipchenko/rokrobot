@@ -218,8 +218,11 @@ def setupCamps(region):
         moveRnd(region, [])
 
 def returnCamps(region):
-    print "kingdom.returnCamps call"
+    Debug.log(1, "kingdom.returnCamps call")
     backToNormalView(region)
+    more = region.exists("1504626448184.png", 0)
+    if more:
+        clickRnd(more)
     try:
         for b in region.findAll( precise("1505250782722.png")):
             print "Back button checking"
@@ -338,7 +341,7 @@ def sendResources(region):
     Debug.log(1, "CALL kingdom.sendResources")
     try:
         Debug.log(1, "Sending Iron and Wood to main Buzuk")
-        while True:
+        while False:
             if region.exists("1504626448184.png", 0):
                 break
             if not sendRes(region, Range4, "1506553279198.png", "1506292276572.png", [Res_Iron, Res_Wood]):
@@ -347,7 +350,23 @@ def sendResources(region):
         for i in range(0, 3): #Maximum attempts for problem with last caravan
             if region.exists("1504626448184.png", 0):
                 break
-            if not sendRes(region, Range2, "1506528760102.png", "1506528776655.png", [Res_Food]):                
+            if not sendRes(region, Range2, "1506528760102.png", "1506528776655.png", [Res_Iron, Res_Wood, Res_Food]):                
                 break
     except FindFailed:
         Debug.log(1, "EXCEPTION. Image not found in kingdom.sendResources")
+
+def obtainGifts(region):
+    Debug.log(1, "CALL kingdom.obtainGifts")
+    try:
+        clickRnd( region.find("1507130336689.png") )
+        while True: 
+                btn = region.exists( Pattern("1507130453183.png").similar(0.90) )
+                if btn:
+                    clickRnd(btn)
+                    sleep(4)
+                else:
+                    break
+        clickBack()
+    except FindFailed:
+        Debug.log(1, "EXCEPTION. Image not found in kingdom.sendResources")
+    Debug.log(1, "kingdom.obtainGifts finished")

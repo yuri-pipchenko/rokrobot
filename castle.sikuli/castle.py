@@ -33,6 +33,8 @@ bagResources = ["1504818126267.png", "1504818137993.png", "1504818150387.png", "
                 "1504818231664.png", "1504818243413.png", "1504818289542.png", "1504818760493.png", "1504818770714.png", "1504818780465.png", "1504818813360.png", "1504818825413.png", "1504818834752.png", "1504818865969.png"]
 
 farmImages = ["1506944719575.png", "1506944746211.png", "1506944774051.png"]
+fountainImages = ["1507131672596.png", "1507131659838.png", "1507131690838.png", ""]
+
 
 class Anchor(object):
     mImg = None
@@ -109,15 +111,20 @@ def dragonChallenge(owner):
     checkForHints(owner)
     try:
         clickImagesRnd(owner, ["1504525543350.png", "1505126524054.png"])
-        fast = owner.exists("1505649506701.png", 2)
+        fast = owner.exists(Pattern("1505649506701.png").similar(0.90), 2)
         if fast:
+            Debug.log(1, "Fast mode started")
             clickRnd(fast)
-            sleep(3)
-            clickBack()
+            fin = owner.exists("1507502064164.png", 30)
+            if fin:
+                clickRnd(fin)
+                clickRnd( owner.wait("1507502207166.png", 3) )
         normal = owner.exists("1503360222830.png", 1)
         if normal:
+            Debug.log(1, "Challenge is accepted")
             clickRnd(normal)
-            clickRnd( owner.wait("1503361031868.png", 4) )
+            sleep(2)
+            clickRnd( owner.wait("1503361031868.png", 2) )
         else:
             cont = owner.exists("1503359163762.png", 1)
             if cont:
@@ -149,7 +156,7 @@ def dragonChallenge(owner):
                     "1503304124989.png"] ):
                         print "castle.dragonChallenge Popup ignoring"
                         clickBack()
-                        sleep(1)
+                        sleep(2)
         clickBack()
         Debug.log(1, "Treating the troops")
         clickRnd( find("1505426172474.png") )
@@ -169,26 +176,35 @@ def treasury(owner):
     clickImagesRnd(owner, ["1504525543350.png", "1505126562813.png"])
     
     sleep(5)
+    fin = owner.exists("1503612318821.png", 1)
+    if fin:
+        Debug.log(1, "Finish button found. Click it.")
+        clickRnd(fin)
+        sleep(5)
     for i in range(0, 5):       
         beg_free = owner.exists("1503611041801.png", 1)
         if beg_free == None:
+            Debug.log(1, "No Begin button found. Exiting..")
             clickBack()
             return()
         clickRnd(beg_free)
         while True:
-            reject = owner.exists("1504764983306.png", 3) #No coins to continue
-            if reject != None:
+            reject = owner.exists(Pattern("1504764983306.png").similar(0.90), 3) #No coins to continue
+            if reject:
+                Debug.log(1, "No coins for continue. Exiting..")
                 clickBackN(2)
                 return()
-            if owner.exists(Pattern("1505132726391.png").similar(0.95)): #Maximum attempts achieved
+            if owner.exists(Pattern("1505132726391.png").similar(0.95)):
+                Debug.log(1, "Maximum attempts achieved")
                 return()
             cubes = owner.exists("1503611083109.png", 3)
             if cubes != None:
+                Debug.log(1, "Run cubes rotation")
                 clickRnd( cubes.above(100) )
-                sleep(10)
+                sleep(13)
             else:
                 break
-        clickRnd( owner.wait("1503612318821.png", 2) )
+        clickRnd( owner.wait("1503612318821.png", 1) )
         sleep(5)
     clickBack()
     print "castle.treasury finished"
@@ -222,22 +238,23 @@ def useBagResource(owner, resImage):
 def useBagResources(owner, resImages):
     Debug.log(1, "CALL castle.useBagResources")
     inner_reg = owner.grow(-100)
+    for img in resImages:
+        useBagResource(owner, img)
     for i in range(0, 3):
-        for img in resImages:
-            useBagResource(owner, img)
-        if i < 3:
-            moveByParts(owner, 6, 2)
-    print "castle.useBagResources finished"
+        moveByParts(inner_reg, 6, 2)
+    for img in resImages:
+        useBagResource(owner, img)
+    Debug.log(1, "castle.useBagResources finished")
 
 def clearBag(region):
-    Debug.log(1, "CALL castle.clearBag")
+    Debug.log(1, "CALL ---- CLEAR BAG ----")
     closePopups(region)
     clickRnd( region.find("1504800698750.png") )
     sleep(3)
     clickBack()
     sleep(2)
     clickRnd( region.find("1504800698750.png") )
-    useBagResources(rigion, bagResources)
+    useBagResources(region, bagResources)
     clickBack()
     Debug.log(1, "castle.clearBag finished")
 
@@ -255,7 +272,7 @@ def findFarms(region):
     return res    
 
 def clearFarms(region):
-    Debug.log(1, "CALL castle.clearFarms")
+    Debug.log(1, "CALL ---- CLEAR INTERNAL FARMS ----")
     closePopups(region)
     locate(region, Pos_Farms1)
     checkForHints(region)
@@ -266,6 +283,29 @@ def clearFarms(region):
     for f in findFarms(region):
         clickRnd(f)
     Debug.log(1, "castle.clearFarms finished")
+
+
+def useFountain(region, resKind):
+    Debug.log(1, "CALL ---- USE FOUNTAIN RESOURCES ----")
+    closePopups(region)
+    locate(region, Pos_Fountain)
+    clickImagesRnd(region, ["1507131360536.png", "1507131412687.png"] )
+    img = region.exists(fountainImages[resKind])
+    btn_reg = img.grow(100, 0).below(150)
+    while True:
+        btn = btn_reg.exists("1507131841641.png", 1)
+        if btn:
+            Debug.log(1, "got resource in Fountain")
+            clickRnd(btn)
+            sleep(2)
+        else:
+            Debug.log(1, "No more free resource in Fountain")
+            break
+    while not region.exists("1507132059228.png"):
+        clickBack()
+    clickBack()
+    Debug.log(1, "castle.useFountain finished")
+
 
 forFuture = ["1504800889579.png", "1504801297878.png", "1504801315145.png", "1504801496648.png", "1504801572720.png", "1504801619073.png", "1504801639638.png", "1505546729697.png", "1505547223657.png", "1505547235933.png", "1505549564410.png"]
 

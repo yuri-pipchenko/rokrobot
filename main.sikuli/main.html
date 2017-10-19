@@ -128,7 +128,10 @@ reload(emulator)
                 castle.dragonChallenge(win)
                 castle.treasury(win)
                 castle.clearBag(win)
-            castle.checkForHints(win)
+                castle.useFountain(win, kingdom.Res_Iron)
+                castle.checkForHints(win)
+                castle.clearFarms(win)
+                kingdom.obtainGifts(win)
         <span class="kw">except</span> FindFailed:
             Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. FindFailed"</span>)
             <span class="kw">continue</span>
@@ -157,6 +160,8 @@ reload(emulator)
                     <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
                         kingdom.sendResources(win)
                         kingdom.collectResources(win, accountRes[acc])
+                        kingdom.returnCamps(win)
+                        kingdom.obtainGifts(win)
                 <span class="kw">except</span> FindFailed:
                     Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. FindFailed"</span>)
                     <span class="kw">continue</span>
@@ -209,20 +214,21 @@ Settings.UserLogTime = True
 
 <span class="cmt">#kingdom.occupyRuins(win)</span>
 <span class="cmt">#dailyRoutine()</span>
-<span class="cmt">#farming()</span>
+farming()
 <span class="cmt">#warMode()</span>
-win = emulator.defineWindow(emulator.Emul_Nox)
-win.highlight(<span class="dig">2</span>)
-<span class="kw">print</span> <span class="str">"Emulator demensions:"</span>, win.w, win.h
+<span class="cmt">#win = emulator.defineWindow(emulator.Emul_Nox)    </span>
+<span class="cmt">#win.highlight(2)</span>
+<span class="cmt">#print "Emulator demensions:", win.w, win.h</span>
 
+<span class="cmt">#castle.useFountain(win, kingdom.Res_Iron)</span>
 <span class="cmt">#adjustWinSize(win)</span>
 <span class="cmt">#win = emulator.defineWindow(emulator.Emul_Nox)    </span>
 <span class="cmt">#win.highlight(2)</span>
 
-castle.clearFarms(win)
+<span class="cmt">#castle.clearFarms(win)</span>
 <span class="cmt">#ingdom.collectResources(win, kingdom.resSet1)</span>
 <span class="cmt">#kingdom.sendResources(win)</span>
-<span class="kw">print</span> <span class="str">"Emulator demensions:"</span>, win.w, win.h
+<span class="cmt">#print "Emulator demensions:", win.w, win.h</span>
 <span class="cmt">#Correct size: 546x969</span>
 <span class="cmt">#castle.dragonChallenge(win)</span>
 <span class="cmt">#castle.clearBag(win)</span>
