@@ -46,7 +46,8 @@ def setMode(region, mode):
                 clickRnd( region.find("1503338839512.png") )
             clickRnd( region.wait("1505428512489.png", 10) )
         sleep(10)
-    scaleOut(region)
+    if mode != Mode_Kingdom:
+        scaleOut(region)
     new_mode = currentMode(region)
     Debug.log(1, "modes.setMode finished. Current mode is: %1$s", new_mode)
     return mode == new_mode

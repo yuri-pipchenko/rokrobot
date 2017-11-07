@@ -127,7 +127,7 @@ reload(emulator)
             <span class="kw">if</span> modes.setMode(win, modes.Mode_Castle):
                 castle.dragonChallenge(win)
                 castle.treasury(win)
-                castle.clearBag(win)
+<span class="cmt">#                castle.clearBag(win)</span>
                 castle.useFountain(win, kingdom.Res_Iron)
                 castle.checkForHints(win)
                 castle.clearFarms(win)
@@ -158,7 +158,7 @@ reload(emulator)
                         castle.checkForHints(win)
                     Debug.log(<span class="dig">1</span>, <span class="str">"Do actions in MAP mode"</span>)
                     <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
-                        kingdom.sendResources(win)
+<span class="cmt">#                        kingdom.sendResources(win)</span>
                         kingdom.collectResources(win, accountRes[acc])
                         kingdom.returnCamps(win)
                         kingdom.obtainGifts(win)
@@ -175,30 +175,49 @@ reload(emulator)
     Debug.log(<span class="dig">1</span>, <span class="str">"---- FARMING FINISHED ----"</span>)
 
 <span class="kw">def</span> warMode():
+    Debug.log(<span class="dig">1</span>, <span class="str">"-------- WAR MODE --------"</span>)
     <span class="kw">while</span> True:
-        runROK(win)
-        <span class="kw">for</span> acc <span class="kw">in</span> range(<span class="dig">0</span>, len(accountImages)):
-            sleepRnd(<span class="dig">120</span>)
-            <span class="kw">try</span>:
-                account.changeAccount(win, accountImages[acc])
-                <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
-                    kingdom.occupyRuins(win)
-                    kingdom.setupCamps(win)
-                    kingdom.returnCamps(win)
-            <span class="kw">except</span> FindFailed:
-                <span class="kw">continue</span>
-        closeROK(win)
+        emulator.runEmulator()
+        win = emulator.defineWindow(emulator.Emul_Nox)
+        win.highlight(<span class="dig">1</span>)
+        <span class="kw">if</span> runROK(win):
+            Debug.log(<span class="dig">1</span>, <span class="str">"Begin rotating accounts"</span>)
+            <span class="kw">for</span> acc <span class="kw">in</span> range(<span class="dig">0</span>, len(accountImages)):
+                <span class="kw">try</span>:
+                    account.changeAccount(win, accountImages[acc])
+                    Debug.log(<span class="dig">1</span>, <span class="str">"Do actions in CASTLE mode"</span>)
+                    <span class="kw">if</span> modes.setMode(win, modes.Mode_Castle):
+                        closePopups(win)
+                        castle.checkForHints(win)
+                    <span class="kw">if</span> modes.setMode(win, modes.Mode_Kingdom):
+                        Debug.log(<span class="dig">1</span>, <span class="str">"Go to safe zone"</span>)
+                        clickRnd(Region(<span class="dig">22</span>,<span class="dig">641</span>,<span class="dig">152</span>,<span class="dig">101</span>))
+                        <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
+                            kingdom.occupyRuins(win)
+                            kingdom.setupCamps(win)
+                            kingdom.returnCamps(win)
+                <span class="kw">except</span> FindFailed:
+                    Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. FindFailed"</span>)
+                    <span class="kw">continue</span>
+                <span class="kw">except</span> ValueError:
+                    Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. UnknownGameState"</span>)
+                    <span class="kw">break</span>
+        <span class="kw">else</span>:
+            Debug.log(<span class="dig">1</span>, <span class="str">"Game is not started. Try later.."</span>)
+            <span class="skw">sleep</span>(<span class="dig">300</span>)
+        emulator.closeEmulator(win)
 
 <span class="kw">def</span> adjustWinSize(win):
     p1 = win.getBottomRight()
     p2 = Location(p1.x + <span class="dig">546</span> - win.w, p1.y + <span class="dig">969</span> - win.h)
     slowDragDrop(win, p1, p2)
 
-<span class="cmt">#accountImages = ["1505069619124.png", "1505070250701.png", "1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]</span>
-<span class="cmt">#accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]</span>
+accountImages = [<img src="1505069619124.png" />, <img src="1505070250701.png" />, <img src="1505070265885.png" />, <img src="1505070277576.png" />, <img src="1505070293164.png" />, <img src="1505070305383.png" />, <img src="1505070319898.png" />, <img src="1505070338301.png" />]
+accountRes    = [kingdom.resSet4, kingdom.resSet4, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
+<span class="cmt">#accountRes    = [kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3]</span>
 
-accountImages = [<img src="1505070265885.png" />, <img src="1505070277576.png" />, <img src="1505070293164.png" />, <img src="1505070305383.png" />, <img src="1505070319898.png" />, <img src="1505070338301.png" />]
-accountRes    = [kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
+<span class="cmt">#accountImages = ["1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]</span>
+<span class="cmt">#accountRes    = [kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]</span>
 
 
 
@@ -219,6 +238,8 @@ farming()
 <span class="cmt">#win = emulator.defineWindow(emulator.Emul_Nox)    </span>
 <span class="cmt">#win.highlight(2)</span>
 <span class="cmt">#print "Emulator demensions:", win.w, win.h</span>
+
+<span class="cmt">#kingdom.setupCamps(win)</span>
 
 <span class="cmt">#castle.useFountain(win, kingdom.Res_Iron)</span>
 <span class="cmt">#adjustWinSize(win)</span>

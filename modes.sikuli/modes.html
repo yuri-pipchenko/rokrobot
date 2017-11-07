@@ -118,7 +118,8 @@ Mode_World   = <span class="dig">4</span>
                 clickRnd( region.<span class="skw">find</span>(<img src="1503338839512.png" />) )
             clickRnd( region.<span class="skw">wait</span>(<img src="1505428512489.png" />, <span class="dig">10</span>) )
         <span class="skw">sleep</span>(<span class="dig">10</span>)
-    scaleOut(region)
+    <span class="kw">if</span> mode != Mode_Kingdom:
+        scaleOut(region)
     new_mode = currentMode(region)
     Debug.log(<span class="dig">1</span>, <span class="str">"modes.setMode finished. Current mode is: %1$s"</span>, new_mode)
     <span class="kw">return</span> mode == new_mode

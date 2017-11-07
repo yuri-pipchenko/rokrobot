@@ -85,6 +85,8 @@ resZeroImages = [<img src="1506443543752.png" />, <img src="1506443034118.png" /
 
 resSet1 = [Res_Iron, Res_Wood, Res_Food]
 resSet2 = [Res_Iron, Res_Food, Res_Wood]
+resSet3 = [Res_Food, Res_Iron]
+resSet4 = [Res_Silver, Res_Iron, Res_Wood]
 
 Range1 = <span class="dig">0</span>
 Range2 = <span class="dig">1</span>
@@ -264,13 +266,15 @@ resources = []
     <span class="kw">print</span> <span class="str">"kingdom.setupCamps call"</span>
     backToNormalView(region)
     <span class="kw">while</span> True:
-        <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">15</span>):
+        <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">10</span>):
             p1 = pointRnd(region.grow(-<span class="dig">120</span>, -<span class="dig">220</span>))
             region.<span class="skw">click</span>(p1)
             tp = region.exists(<img src="1505392746272.png" />)
-            <span class="kw">if</span> tp != None:
+            <span class="kw">if</span> tp:
                 <span class="kw">try</span>:
-                    clickRnd( tp.right(<span class="dig">150</span>).grow(<span class="dig">20</span>).<span class="skw">find</span>(<img src="1505392863162.png" />) )
+                    sz = tp.right(<span class="dig">150</span>).grow(<span class="dig">20</span>).<span class="skw">find</span>(<img src="1505392863162.png" />)
+                    sz.highlight(<span class="dig">2</span>)
+                    clickRnd( sz )
                     <span class="kw">if</span> region.exists(<img src="1505393098116.png" />) != None:
                         <span class="kw">print</span> <span class="str">"Can't set up a camp. Maximum march number"</span>
                         clickBack()
@@ -279,8 +283,8 @@ resources = []
                     <span class="kw">return</span> True
                 <span class="kw">except</span> FindFailed:
                     <span class="kw">print</span> <span class="str">"Seize button not found or another strange things occur"</span>
-            clickRnd(region.grow(-<span class="dig">150</span>, -<span class="dig">200</span>))
-            <span class="skw">sleep</span>(<span class="dig">2</span>)
+<span class="cmt">#            clickRnd(region.grow(-150, -200))</span>
+<span class="cmt">#            sleep(2)</span>
             <span class="kw">while</span> True:
                 p2 = pointRnd(region.grow(-<span class="dig">120</span>, -<span class="dig">220</span>))
                 <span class="kw">if</span> distance(p1, p2) &gt; <span class="dig">100</span>:
@@ -413,7 +417,7 @@ resources = []
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.sendResources"</span>)
     <span class="kw">try</span>:
         Debug.log(<span class="dig">1</span>, <span class="str">"Sending Iron and Wood to main Buzuk"</span>)
-        <span class="kw">while</span> False:
+        <span class="kw">while</span> True:
             <span class="kw">if</span> region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>):
                 <span class="kw">break</span>
             <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range4, <img src="1506553279198.png" />, <img src="1506292276572.png" />, [Res_Iron, Res_Wood]):
@@ -422,7 +426,7 @@ resources = []
         <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">3</span>): <span class="cmt">#Maximum attempts for problem with last caravan</span>
             <span class="kw">if</span> region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>):
                 <span class="kw">break</span>
-            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range2, <img src="1506528760102.png" />, <img src="1506528776655.png" />, [Res_Iron, Res_Wood, Res_Food]):
+            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range2, <img src="1506528760102.png" />, <img src="1506528776655.png" />, [Res_Food]):
                 <span class="kw">break</span>
     <span class="kw">except</span> FindFailed:
         Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. Image not found in kingdom.sendResources"</span>)

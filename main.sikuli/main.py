@@ -55,7 +55,7 @@ def dailyRoutine():
             if modes.setMode(win, modes.Mode_Castle):
                 castle.dragonChallenge(win)
                 castle.treasury(win)
-                castle.clearBag(win)
+#                castle.clearBag(win)
                 castle.useFountain(win, kingdom.Res_Iron)
                 castle.checkForHints(win)
                 castle.clearFarms(win)
@@ -86,7 +86,7 @@ def farming():
                         castle.checkForHints(win)
                     Debug.log(1, "Do actions in MAP mode")
                     if modes.setMode(win, modes.Mode_Map):
-                        kingdom.sendResources(win)
+#                        kingdom.sendResources(win)
                         kingdom.collectResources(win, accountRes[acc])
                         kingdom.returnCamps(win)
                         kingdom.obtainGifts(win)
@@ -103,30 +103,49 @@ def farming():
     Debug.log(1, "---- FARMING FINISHED ----")
 
 def warMode():
+    Debug.log(1, "-------- WAR MODE --------")
     while True:
-        runROK(win)
-        for acc in range(0, len(accountImages)):
-            sleepRnd(120)
-            try:
-                account.changeAccount(win, accountImages[acc])
-                if modes.setMode(win, modes.Mode_Map):
-                    kingdom.occupyRuins(win)
-                    kingdom.setupCamps(win)
-                    kingdom.returnCamps(win)
-            except FindFailed:
-                continue
-        closeROK(win)
+        emulator.runEmulator()
+        win = emulator.defineWindow(emulator.Emul_Nox)    
+        win.highlight(1)
+        if runROK(win):
+            Debug.log(1, "Begin rotating accounts")
+            for acc in range(0, len(accountImages)):
+                try:
+                    account.changeAccount(win, accountImages[acc])
+                    Debug.log(1, "Do actions in CASTLE mode")
+                    if modes.setMode(win, modes.Mode_Castle):
+                        closePopups(win)
+                        castle.checkForHints(win)
+                    if modes.setMode(win, modes.Mode_Kingdom):
+                        Debug.log(1, "Go to safe zone")
+                        clickRnd(Region(22,641,152,101))
+                        if modes.setMode(win, modes.Mode_Map):
+                            kingdom.occupyRuins(win)
+                            kingdom.setupCamps(win)
+                            kingdom.returnCamps(win)
+                except FindFailed:
+                    Debug.log(1, "EXCEPTION. FindFailed")
+                    continue
+                except ValueError:
+                    Debug.log(1, "EXCEPTION. UnknownGameState")
+                    break
+        else:
+            Debug.log(1, "Game is not started. Try later..")
+            sleep(300)
+        emulator.closeEmulator(win)    
 
 def adjustWinSize(win):
     p1 = win.getBottomRight()
     p2 = Location(p1.x + 546 - win.w, p1.y + 969 - win.h)
     slowDragDrop(win, p1, p2)
 
-#accountImages = ["1505069619124.png", "1505070250701.png", "1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
-#accountRes    = [kingdom.Res_Wood, kingdom.Res_Food,  kingdom.Res_Iron, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food, kingdom.Res_Food]
+accountImages = ["1505069619124.png", "1505070250701.png", "1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
+accountRes    = [kingdom.resSet4, kingdom.resSet4, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
+#accountRes    = [kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3]
 
-accountImages = ["1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
-accountRes    = [kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
+#accountImages = ["1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
+#accountRes    = [kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
 
 
 
@@ -147,6 +166,8 @@ farming()
 #win = emulator.defineWindow(emulator.Emul_Nox)    
 #win.highlight(2)
 #print "Emulator demensions:", win.w, win.h
+
+#kingdom.setupCamps(win)
 
 #castle.useFountain(win, kingdom.Res_Iron)
 #adjustWinSize(win)

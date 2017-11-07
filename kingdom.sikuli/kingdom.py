@@ -13,6 +13,8 @@ resZeroImages = ["1506443543752.png", "1506443034118.png", "1506443071581.png", 
 
 resSet1 = [Res_Iron, Res_Wood, Res_Food]
 resSet2 = [Res_Iron, Res_Food, Res_Wood]
+resSet3 = [Res_Food, Res_Iron]
+resSet4 = [Res_Silver, Res_Iron, Res_Wood]
 
 Range1 = 0
 Range2 = 1
@@ -192,13 +194,15 @@ def setupCamps(region):
     print "kingdom.setupCamps call"
     backToNormalView(region)
     while True:
-        for i in range(0, 15):
+        for i in range(0, 10):
             p1 = pointRnd(region.grow(-120, -220))
             region.click(p1)
             tp = region.exists("1505392746272.png")
-            if tp != None:
+            if tp:
                 try:
-                    clickRnd( tp.right(150).grow(20).find("1505392863162.png") )
+                    sz = tp.right(150).grow(20).find("1505392863162.png")
+                    sz.highlight(2)
+                    clickRnd( sz )
                     if region.exists("1505393098116.png") != None:
                         print "Can't set up a camp. Maximum march number"
                         clickBack()
@@ -207,8 +211,8 @@ def setupCamps(region):
                     return True
                 except FindFailed:
                     print "Seize button not found or another strange things occur"
-            clickRnd(region.grow(-150, -200))
-            sleep(2)
+#            clickRnd(region.grow(-150, -200))
+#            sleep(2)
             while True:
                 p2 = pointRnd(region.grow(-120, -220))
                 if distance(p1, p2) > 100:
@@ -341,7 +345,7 @@ def sendResources(region):
     Debug.log(1, "CALL kingdom.sendResources")
     try:
         Debug.log(1, "Sending Iron and Wood to main Buzuk")
-        while False:
+        while True:
             if region.exists("1504626448184.png", 0):
                 break
             if not sendRes(region, Range4, "1506553279198.png", "1506292276572.png", [Res_Iron, Res_Wood]):
@@ -350,7 +354,7 @@ def sendResources(region):
         for i in range(0, 3): #Maximum attempts for problem with last caravan
             if region.exists("1504626448184.png", 0):
                 break
-            if not sendRes(region, Range2, "1506528760102.png", "1506528776655.png", [Res_Iron, Res_Wood, Res_Food]):                
+            if not sendRes(region, Range2, "1506528760102.png", "1506528776655.png", [Res_Food]):                
                 break
     except FindFailed:
         Debug.log(1, "EXCEPTION. Image not found in kingdom.sendResources")
