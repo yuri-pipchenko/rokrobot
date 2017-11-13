@@ -29,6 +29,19 @@ NoTroops = 100
 
 resources = []
 
+routes = [ 
+        [mL, mL, mL, mD, mD, mD, mR, mR, mU, mU, mR, mR, mD, mD, mR, mR, mU, mU, mU, mL, mL],
+        [mR, mR, mR, mD, mD, mD, mL, mL, mU, mU, mL, mL, mD, mD, mL, mL, mU, mU, mU, mR, mR],
+        [mL, mL, mL, mD, mD, mR, mR, mR, mR, mR, mR, mD, mD, mL, mL, mL, mL, mL, mL],
+        [mR, mR, mR, mD, mD, mL, mL, mL, mL, mL, mL, mD, mD, mR, mR, mR, mR, mR, mR],
+        [mD, mD, mD, mD, mD, mD, mR, mR, mU, mU, mU, mU, mU, mR, mR, mD, mD, mD, mD, mD],
+        [mD, mD, mL, mL, mD, mD, mL, mL, mD, mD, mR, mR, mR, mR, mU, mU, mR, mR, mU, mU]
+        ]
+
+def selectRouteRnd():
+    idx = random.randint(0, len(routes)-1)
+    return routes[idx]
+
 def inOccupied(coord, occupied):
     Debug.log(1, "CALL kingdom.inOccupied %1$s %2$s", [coord, occupied])
     for p in occupied:
@@ -90,38 +103,35 @@ def occupyResource(region, resSet, occupied):
                     break
     return None
 
-def moveRnd(owner, coords_for_shift):
+def moveRnd(region):
     Debug.log(1, "CALL kingdom.moveRnd")
+    shift_acc = Location(0, 0)
     beg_idx = random.randint(1, 7)
     while True:
         end_idx = random.randint(0, 7)
         if beg_idx != end_idx:
             break
     count = random.randint(1, 3)
-    inner_reg = owner.grow(-100)
-    print "owner: ", owner, "inner_reg: ", inner_reg
-    beg_reg = screenPartToRegion(inner_reg, beg_idx)
-    end_reg = screenPartToRegion(inner_reg, end_idx)
+    inner_reg = region.grow(-100)
     for i in range(0, count):
-        closePopups(owner)
-        beg_point = pointRnd(beg_reg)
-        end_point = pointRnd(end_reg)
-        slowDragDrop(owner, beg_point, end_point)
-        shift = Location(end_point.x - beg_point.x, end_point.y - beg_point.y)
-        return shiftCoords(coords_for_shift, shift)
+        shift = moveByParts(inner_reg, [beg_idx, end_idx])
+        shift_acc = Location(shift_acc.x + shift.x, shift_acc.y + shift.y)
+    return shift_acc
 
 def collectResources(owner, resSet):
     Debug.log(1, "CALL kingdom.collectResources")
     occupied = []
     closePopups(owner)
-    if owner.exists("1504626448184.png"):
-        return
-    for i in range(0, 30): #After 30 attemps exit. No tiles found
+    route = selectRouteRnd()
+    for m in route:
+        if owner.exists("1504626448184.png"):
+            return
         tile = occupyResource(owner, resSet, occupied)
         if tile == NoTroops:
             return()
         if tile == None:
-            occupied = moveRnd(owner, occupied)
+            shift = moveByParts(owner, m)
+            occupied = shiftCoords(occupied, shift)
         else:
             occupied.append(tile)
     print "kingdom.collectResources finished"

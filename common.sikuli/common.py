@@ -7,6 +7,13 @@ screenParts = [Region(1,1,2,3),  Region(5,1,2,3),  Region(9,1,2,3),
                Region(1,6,2,3),                       Region(9,6,2,3),
                Region(1,11,2,3), Region(5,11,2,3), Region(8,11,2,3)]
 
+#Pairs of parts for moving the screen
+mL = [3, 4]
+mR = [4, 3]
+mU = [1, 6]
+mD = [6, 1]
+
+
 def pointRnd(region):
     W = region.getW()
     H = region.getH()
@@ -139,10 +146,12 @@ def precise(image):
     patt = Pattern(image)
     return patt.similar(0.95)
 
-def moveByParts(region, begPart, endPart):
-    beg_reg = screenPartToRegion(region, begPart)
-    end_reg = screenPartToRegion(region, endPart)
+def moveByParts(region, partPair):
+    beg_reg = screenPartToRegion(region, partPair[0])
+    end_reg = screenPartToRegion(region, partPair[1])
     beg_point = pointRnd(beg_reg)
     end_point = pointRnd(end_reg)
     closePopups(region)
     slowDragDrop(region, beg_point, end_point)
+    shift = Location(end_point.x - beg_point.x, end_point.y - beg_point.y)
+    return shift

@@ -101,6 +101,19 @@ NoTroops = <span class="dig">100</span>
 
 resources = []
 
+routes = [
+        [mL, mL, mL, mD, mD, mD, mR, mR, mU, mU, mR, mR, mD, mD, mR, mR, mU, mU, mU, mL, mL],
+        [mR, mR, mR, mD, mD, mD, mL, mL, mU, mU, mL, mL, mD, mD, mL, mL, mU, mU, mU, mR, mR],
+        [mL, mL, mL, mD, mD, mR, mR, mR, mR, mR, mR, mD, mD, mL, mL, mL, mL, mL, mL],
+        [mR, mR, mR, mD, mD, mL, mL, mL, mL, mL, mL, mD, mD, mR, mR, mR, mR, mR, mR],
+        [mD, mD, mD, mD, mD, mD, mR, mR, mU, mU, mU, mU, mU, mR, mR, mD, mD, mD, mD, mD],
+        [mD, mD, mL, mL, mD, mD, mL, mL, mD, mD, mR, mR, mR, mR, mU, mU, mR, mR, mU, mU]
+        ]
+
+<span class="kw">def</span> selectRouteRnd():
+    idx = random.randint(<span class="dig">0</span>, len(routes)-<span class="dig">1</span>)
+    <span class="kw">return</span> routes[idx]
+
 <span class="kw">def</span> inOccupied(coord, occupied):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.inOccupied %1$s %2$s"</span>, [coord, occupied])
     <span class="kw">for</span> p <span class="kw">in</span> occupied:
@@ -162,38 +175,35 @@ resources = []
                     <span class="kw">break</span>
     <span class="kw">return</span> None
 
-<span class="kw">def</span> moveRnd(owner, coords_for_shift):
+<span class="kw">def</span> moveRnd(region):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.moveRnd"</span>)
+    shift_acc = Location(<span class="dig">0</span>, <span class="dig">0</span>)
     beg_idx = random.randint(<span class="dig">1</span>, <span class="dig">7</span>)
     <span class="kw">while</span> True:
         end_idx = random.randint(<span class="dig">0</span>, <span class="dig">7</span>)
         <span class="kw">if</span> beg_idx != end_idx:
             <span class="kw">break</span>
     count = random.randint(<span class="dig">1</span>, <span class="dig">3</span>)
-    inner_reg = owner.grow(-<span class="dig">100</span>)
-    <span class="kw">print</span> <span class="str">"owner: "</span>, owner, <span class="str">"inner_reg: "</span>, inner_reg
-    beg_reg = screenPartToRegion(inner_reg, beg_idx)
-    end_reg = screenPartToRegion(inner_reg, end_idx)
+    inner_reg = region.grow(-<span class="dig">100</span>)
     <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, count):
-        closePopups(owner)
-        beg_point = pointRnd(beg_reg)
-        end_point = pointRnd(end_reg)
-        slowDragDrop(owner, beg_point, end_point)
-        shift = Location(end_point.x - beg_point.x, end_point.y - beg_point.y)
-        <span class="kw">return</span> shiftCoords(coords_for_shift, shift)
+        shift = moveByParts(inner_reg, [beg_idx, end_idx])
+        shift_acc = Location(shift_acc.x + shift.x, shift_acc.y + shift.y)
+    <span class="kw">return</span> shift_acc
 
 <span class="kw">def</span> collectResources(owner, resSet):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.collectResources"</span>)
     occupied = []
     closePopups(owner)
-    <span class="kw">if</span> owner.exists(<img src="1504626448184.png" />):
-        <span class="kw">return</span>
-    <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">30</span>): <span class="cmt">#After 30 attemps exit. No tiles found</span>
+    route = selectRouteRnd()
+    <span class="kw">for</span> m <span class="kw">in</span> route:
+        <span class="kw">if</span> owner.exists(<img src="1504626448184.png" />):
+            <span class="kw">return</span>
         tile = occupyResource(owner, resSet, occupied)
         <span class="kw">if</span> tile == NoTroops:
             <span class="kw">return</span>()
         <span class="kw">if</span> tile == None:
-            occupied = moveRnd(owner, occupied)
+            shift = moveByParts(owner, m)
+            occupied = shiftCoords(occupied, shift)
         <span class="kw">else</span>:
             occupied.append(tile)
     <span class="kw">print</span> <span class="str">"kingdom.collectResources finished"</span>

@@ -171,9 +171,6 @@ farming()
 
 #castle.useFountain(win, kingdom.Res_Iron)
 #adjustWinSize(win)
-#win = emulator.defineWindow(emulator.Emul_Nox)    
-#win.highlight(2)
-
 #castle.clearFarms(win)
 #ingdom.collectResources(win, kingdom.resSet1)
 #kingdom.sendResources(win)

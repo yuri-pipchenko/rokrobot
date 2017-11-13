@@ -241,7 +241,7 @@ def useBagResources(owner, resImages):
     for img in resImages:
         useBagResource(owner, img)
     for i in range(0, 3):
-        moveByParts(inner_reg, 6, 2)
+        moveByParts(inner_reg, mD) #scroll down for three times
     for img in resImages:
         useBagResource(owner, img)
     Debug.log(1, "castle.useBagResources finished")

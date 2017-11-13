@@ -79,6 +79,13 @@ screenParts = [Region(<span class="dig">1</span>,<span class="dig">1</span>,<spa
                Region(<span class="dig">1</span>,<span class="dig">6</span>,<span class="dig">2</span>,<span class="dig">3</span>),                       Region(<span class="dig">9</span>,<span class="dig">6</span>,<span class="dig">2</span>,<span class="dig">3</span>),
                Region(<span class="dig">1</span>,<span class="dig">11</span>,<span class="dig">2</span>,<span class="dig">3</span>), Region(<span class="dig">5</span>,<span class="dig">11</span>,<span class="dig">2</span>,<span class="dig">3</span>), Region(<span class="dig">8</span>,<span class="dig">11</span>,<span class="dig">2</span>,<span class="dig">3</span>)]
 
+<span class="cmt">#Pairs of parts for moving the screen</span>
+mL = [<span class="dig">3</span>, <span class="dig">4</span>]
+mR = [<span class="dig">4</span>, <span class="dig">3</span>]
+mU = [<span class="dig">1</span>, <span class="dig">6</span>]
+mD = [<span class="dig">6</span>, <span class="dig">1</span>]
+
+
 <span class="kw">def</span> pointRnd(region):
     W = region.getW()
     H = region.getH()
@@ -211,13 +218,15 @@ screenParts = [Region(<span class="dig">1</span>,<span class="dig">1</span>,<spa
     patt = Pattern(image)
     <span class="kw">return</span> patt.similar(<span class="dig">0.95</span>)
 
-<span class="kw">def</span> moveByParts(region, begPart, endPart):
-    beg_reg = screenPartToRegion(region, begPart)
-    end_reg = screenPartToRegion(region, endPart)
+<span class="kw">def</span> moveByParts(region, partPair):
+    beg_reg = screenPartToRegion(region, partPair[<span class="dig">0</span>])
+    end_reg = screenPartToRegion(region, partPair[<span class="dig">1</span>])
     beg_point = pointRnd(beg_reg)
     end_point = pointRnd(end_reg)
     closePopups(region)
     slowDragDrop(region, beg_point, end_point)
+    shift = Location(end_point.x - beg_point.x, end_point.y - beg_point.y)
+    <span class="kw">return</span> shift
 </pre>
 </body>
 </html>
