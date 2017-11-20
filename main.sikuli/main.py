@@ -160,7 +160,7 @@ while False:
     sleep(20)
 
 #kingdom.occupyRuins(win)
-#dailyRoutine()
+dailyRoutine()
 farming()
 #warMode()
 #win = emulator.defineWindow(emulator.Emul_Nox)    

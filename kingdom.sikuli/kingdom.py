@@ -79,7 +79,7 @@ def occupyResource(region, resSet, occupied):
         if inOccupied(t, occupied):
             continue
         clickRnd(t)
-        occupy = region.exists("1504630391615.png", 2)
+        occupy = t.right(150).grow(20).exists("1510753048842.png", 2)
         if occupy:
             clickRnd(occupy)
             if region.exists("1505598796114.png", 2):

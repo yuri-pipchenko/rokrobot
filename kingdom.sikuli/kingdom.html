@@ -151,7 +151,7 @@ routes = [
         <span class="kw">if</span> inOccupied(t, occupied):
             <span class="kw">continue</span>
         clickRnd(t)
-        occupy = region.exists(<img src="1504630391615.png" />, <span class="dig">2</span>)
+        occupy = t.right(<span class="dig">150</span>).grow(<span class="dig">20</span>).exists(<img src="1510753048842.png" />, <span class="dig">2</span>)
         <span class="kw">if</span> occupy:
             clickRnd(occupy)
             <span class="kw">if</span> region.exists(<img src="1505598796114.png" />, <span class="dig">2</span>):
