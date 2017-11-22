@@ -79,14 +79,10 @@ Res_Wood   = <span class="dig">1</span>
 Res_Iron   = <span class="dig">2</span>
 Res_Silver = <span class="dig">3</span>
 
-resourceImages = [<img src="1504627880561.png" />, <img src="1504627956538.png" />, <img src="1504627909370.png" />, <img src="1504628011262.png" />]
-convoyImages = [<img src="1505575078585.png" />, <img src="1505575098288.png" />, <img src="1505575069371.png" />, <span class="str">""</span>]
-resZeroImages = [<img src="1506443543752.png" />, <img src="1506443034118.png" />, <img src="1506443071581.png" />, <span class="str">""</span>]
+resourceImages = [Pattern(<img src="1511366510200.png" />).similar(<span class="dig">0.90</span>), <img src="1504627956538.png" />, <img src="1504627909370.png" />, <img src="1504628011262.png" />]
+convoyImages = [<img src="1511305678415.png" />, <img src="1511305692080.png" />, <img src="1511305706423.png" />, <img src="1511305755879.png" />]
+resZeroImages = [<img src="1506443543752.png" />, <img src="1506443034118.png" />, <img src="1506443071581.png" />, <img src="1511307043482.png" />]
 
-resSet1 = [Res_Iron, Res_Wood, Res_Food]
-resSet2 = [Res_Iron, Res_Food, Res_Wood]
-resSet3 = [Res_Food, Res_Iron]
-resSet4 = [Res_Silver, Res_Iron, Res_Wood]
 
 Range1 = <span class="dig">0</span>
 Range2 = <span class="dig">1</span>
@@ -395,12 +391,15 @@ routes = [
         <span class="kw">return</span> False
     <span class="kw">return</span> True
 
-<span class="kw">def</span> sendRes(region, alRange, memberIcon, memberNamePic, resKinds):
+<span class="kw">def</span> sendRes(region, Destination, resKinds):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.sendRes"</span>)
     zeros = zeroResources(region, resKinds)
     <span class="kw">if</span> <span class="kw">not</span> zeros:
         Debug.log(<span class="dig">1</span>, <span class="str">"No resources to send"</span>)
         <span class="kw">return</span> None
+    alRange = Destination[<span class="dig">0</span>]
+    memberIcon = Destination[<span class="dig">1</span>]
+    memberNamePic = Destination[<span class="dig">2</span>]
     <span class="kw">if</span> <span class="kw">not</span> openMemberPage(region, alRange, memberIcon, memberNamePic):
         <span class="kw">return</span> None
     clickRnd( region.<span class="skw">find</span>(<img src="1505574921021.png" />) )
@@ -423,39 +422,23 @@ routes = [
     <span class="skw">sleep</span>(<span class="dig">2</span>)
     <span class="kw">return</span> True
 
-<span class="kw">def</span> sendResources(region):
+<span class="kw">def</span> sendResources(region, materialDest, foodDest):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.sendResources"</span>)
     <span class="kw">try</span>:
-        Debug.log(<span class="dig">1</span>, <span class="str">"Sending Iron and Wood to main Buzuk"</span>)
+        Debug.log(<span class="dig">1</span>, <span class="str">"Sending Silver, Iron and Wood"</span>)
         <span class="kw">while</span> True:
             <span class="kw">if</span> region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>):
                 <span class="kw">break</span>
-            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range4, <img src="1506553279198.png" />, <img src="1506292276572.png" />, [Res_Iron, Res_Wood]):
+            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, materialDest, [Res_Silver, Res_Iron, Res_Wood]):
                 <span class="kw">break</span>
-        Debug.log(<span class="dig">1</span>, <span class="str">"Sending Food to bu ZZZ uk"</span>)
+        Debug.log(<span class="dig">1</span>, <span class="str">"Sending Food"</span>)
         <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">0</span>, <span class="dig">3</span>): <span class="cmt">#Maximum attempts for problem with last caravan</span>
             <span class="kw">if</span> region.exists(<img src="1504626448184.png" />, <span class="dig">0</span>):
                 <span class="kw">break</span>
-            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, Range2, <img src="1506528760102.png" />, <img src="1506528776655.png" />, [Res_Food]):
+            <span class="kw">if</span> <span class="kw">not</span> sendRes(region, foodDest, [Res_Food]):
                 <span class="kw">break</span>
     <span class="kw">except</span> FindFailed:
         Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. Image not found in kingdom.sendResources"</span>)
-
-<span class="kw">def</span> obtainGifts(region):
-    Debug.log(<span class="dig">1</span>, <span class="str">"CALL kingdom.obtainGifts"</span>)
-    <span class="kw">try</span>:
-        clickRnd( region.<span class="skw">find</span>(<img src="1507130336689.png" />) )
-        <span class="kw">while</span> True:
-                btn = region.exists( Pattern(<img src="1507130453183.png" />).similar(<span class="dig">0.90</span>) )
-                <span class="kw">if</span> btn:
-                    clickRnd(btn)
-                    <span class="skw">sleep</span>(<span class="dig">4</span>)
-                <span class="kw">else</span>:
-                    <span class="kw">break</span>
-        clickBack()
-    <span class="kw">except</span> FindFailed:
-        Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. Image not found in kingdom.sendResources"</span>)
-    Debug.log(<span class="dig">1</span>, <span class="str">"kingdom.obtainGifts finished"</span>)
 </pre>
 </body>
 </html>

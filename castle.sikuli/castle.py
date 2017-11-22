@@ -32,9 +32,9 @@ anchorOffsets = [Location(0,0), Location(272,-193), Location(471,-126), Location
 bagResources = ["1504818126267.png", "1504818137993.png", "1504818150387.png", "1504819557678.png", "1504818162044.png", "1504818171169.png", "1504818180876.png", "1504818190363.png", "1504818205776.png", "1504818218244.png",
                 "1504818231664.png", "1504818243413.png", "1504818289542.png", "1504818760493.png", "1504818770714.png", "1504818780465.png", "1504818813360.png", "1504818825413.png", "1504818834752.png", "1504818865969.png"]
 
-farmImages = ["1506944719575.png", "1506944746211.png", "1506944774051.png"]
-fountainImages = ["1507131672596.png", "1507131659838.png", "1507131690838.png", ""]
-
+farmImages = ["1506944719575.png", "1506944746211.png", "1506944774051.png", "1511303699504.png"]
+        
+fountainImages = ["1511307260456.png", "1511307248325.png", "1511307271249.png", "1511307279403.png"]
 
 class Anchor(object):
     mImg = None
@@ -132,18 +132,18 @@ def dragonChallenge(owner):
             else:
                 return()    
         while owner.exists("1503304190750.png", 5) == None:
-            step = findOneOf(owner, ["1503397709059.png", "1503400697703.png"])
+            step = findOneOf(owner, ["1503397709059.png", "1503400697703.png", "1511301786195.png"])
             if step:
-                owner_y = owner.getCenter().getY()
-                step_y = step.getCenter().getY()
-                if step_y < owner_y:
-                    drag_reg = Region(owner.getX()+ 20, owner.getY() + 80, 40, 70)
-                    beg_loc = pointRnd(drag_reg)
-                    end_loc = pointRnd( drag_reg.offset(0, owner_y - step_y) )
-                    print "castle.dragonChallenge DragDrop From:", beg_loc, "To:", end_loc
-                    owner.dragDrop(beg_loc, end_loc)
-                    step = owner.wait(step.getImage(), 10) #refind sword after dragdrop
-                step.highlight(1)
+#                owner_y = owner.getCenter().getY()
+#                step_y = step.getCenter().getY()
+#                if step_y < owner_y:
+#                    drag_reg = Region(owner.getX()+ 20, owner.getY() + 80, 40, 70)
+#                    beg_loc = pointRnd(drag_reg)
+#                    end_loc = pointRnd( drag_reg.offset(0, owner_y - step_y) )
+#                    print "castle.dragonChallenge DragDrop From:", beg_loc, "To:", end_loc
+#                    owner.dragDrop(beg_loc, end_loc)
+#                    step = owner.wait(step.getImage(), 10) #refind sword after dragdrop
+#                step.highlight(1)
                 clickRnd( step.offset(0, step.getH()+10) )
                 print "castle.dragonChallenge Fire next monster"
                 fire = owner.exists("1503398071679.png", 2)
@@ -181,7 +181,7 @@ def treasury(owner):
         Debug.log(1, "Finish button found. Click it.")
         clickRnd(fin)
         sleep(5)
-    for i in range(0, 5):       
+    for i in range(0, 1):       
         beg_free = owner.exists("1503611041801.png", 1)
         if beg_free == None:
             Debug.log(1, "No Begin button found. Exiting..")
@@ -306,6 +306,42 @@ def useFountain(region, resKind):
     clickBack()
     Debug.log(1, "castle.useFountain finished")
 
+def obtainGifts(region):
+    Debug.log(1, "CALL castle.obtainGifts")
+    try:
+        clickRnd( region.find("1507130336689.png") )
+        while True: 
+                btn = region.exists( Pattern("1507130453183.png").similar(0.90) )
+                if btn:
+                    clickRnd(btn)
+                    sleep(4)
+                else:
+                    break
+        clickBack()
+    except FindFailed:
+        Debug.log(1, "EXCEPTION. Image not found in kingdom.sendResources")
+    Debug.log(1, "castle.obtainGifts finished")
+
+def unpackLetters(region, mailBoxImg):
+    Debug.log(1, "CALL castle.unpackLetters %1$s", mailBoxImg)
+    clickRnd( region.wait(mailBoxImg, 3) )
+    while region.exists("1511280679178.png"):
+        clickImagesRnd(region, ["1511280591126.png", "1511280620859.png", "1511280635267.png", "1511280759807.png", "1511280591126.png", "1511280620859.png", "1511280646045.png", "1511280831675.png"])
+        clickBack()
+    sleep(1)
+    clickBack()
+    
+    
+def getMailGifts(region):
+    Debug.log(1, "CALL castle.getMailGifts")
+    closePopups(region)
+    clickRnd( region.find("1511280158316.png") )
+    unpackLetters(region, "1511280229081.png")
+    unpackLetters(region, "1511280470444.png")
+    unpackLetters(region, "1511280484286.png")
+    unpackLetters(region, "1511280492527.png")
+    clickBack()
+    Debug.log(1, "castle.getMailGifts finished")
 
 forFuture = ["1504800889579.png", "1504801297878.png", "1504801315145.png", "1504801496648.png", "1504801572720.png", "1504801619073.png", "1504801639638.png", "1505546729697.png", "1505547223657.png", "1505547235933.png", "1505549564410.png"]
 

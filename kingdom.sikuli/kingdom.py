@@ -7,14 +7,10 @@ Res_Wood   = 1
 Res_Iron   = 2
 Res_Silver = 3
 
-resourceImages = ["1504627880561.png", "1504627956538.png", "1504627909370.png", "1504628011262.png"]
-convoyImages = ["1505575078585.png", "1505575098288.png", "1505575069371.png", ""]
-resZeroImages = ["1506443543752.png", "1506443034118.png", "1506443071581.png", ""]
+resourceImages = [Pattern("1511366510200.png").similar(0.90), "1504627956538.png", "1504627909370.png", "1504628011262.png"]
+convoyImages = ["1511305678415.png", "1511305692080.png", "1511305706423.png", "1511305755879.png"]
+resZeroImages = ["1506443543752.png", "1506443034118.png", "1506443071581.png", "1511307043482.png"]
 
-resSet1 = [Res_Iron, Res_Wood, Res_Food]
-resSet2 = [Res_Iron, Res_Food, Res_Wood]
-resSet3 = [Res_Food, Res_Iron]
-resSet4 = [Res_Silver, Res_Iron, Res_Wood]
 
 Range1 = 0
 Range2 = 1
@@ -323,12 +319,15 @@ def openMemberPage(region, alRange, memberIcon, memberNamePic):
         return False
     return True
     
-def sendRes(region, alRange, memberIcon, memberNamePic, resKinds):
+def sendRes(region, Destination, resKinds):
     Debug.log(1, "CALL kingdom.sendRes")
     zeros = zeroResources(region, resKinds)
     if not zeros:
         Debug.log(1, "No resources to send")        
         return None
+    alRange = Destination[0]
+    memberIcon = Destination[1]
+    memberNamePic = Destination[2]
     if not openMemberPage(region, alRange, memberIcon, memberNamePic):
         return None
     clickRnd( region.find("1505574921021.png") )
@@ -351,36 +350,20 @@ def sendRes(region, alRange, memberIcon, memberNamePic, resKinds):
     sleep(2)
     return True
     
-def sendResources(region):
+def sendResources(region, materialDest, foodDest):
     Debug.log(1, "CALL kingdom.sendResources")
     try:
-        Debug.log(1, "Sending Iron and Wood to main Buzuk")
+        Debug.log(1, "Sending Silver, Iron and Wood")
         while True:
             if region.exists("1504626448184.png", 0):
                 break
-            if not sendRes(region, Range4, "1506553279198.png", "1506292276572.png", [Res_Iron, Res_Wood]):
+            if not sendRes(region, materialDest, [Res_Silver, Res_Iron, Res_Wood]):
                 break
-        Debug.log(1, "Sending Food to bu ZZZ uk")
+        Debug.log(1, "Sending Food")
         for i in range(0, 3): #Maximum attempts for problem with last caravan
             if region.exists("1504626448184.png", 0):
                 break
-            if not sendRes(region, Range2, "1506528760102.png", "1506528776655.png", [Res_Food]):                
+            if not sendRes(region, foodDest, [Res_Food]):                
                 break
     except FindFailed:
         Debug.log(1, "EXCEPTION. Image not found in kingdom.sendResources")
-
-def obtainGifts(region):
-    Debug.log(1, "CALL kingdom.obtainGifts")
-    try:
-        clickRnd( region.find("1507130336689.png") )
-        while True: 
-                btn = region.exists( Pattern("1507130453183.png").similar(0.90) )
-                if btn:
-                    clickRnd(btn)
-                    sleep(4)
-                else:
-                    break
-        clickBack()
-    except FindFailed:
-        Debug.log(1, "EXCEPTION. Image not found in kingdom.sendResources")
-    Debug.log(1, "kingdom.obtainGifts finished")

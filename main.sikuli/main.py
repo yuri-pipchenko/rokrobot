@@ -1,5 +1,6 @@
 from common import *
 import common
+import configuration
 import account
 import modes
 import castle
@@ -13,9 +14,15 @@ reload(modes)
 reload(castle)
 reload(kingdom)
 reload(emulator)
+reload(configuration)
 
 #Settings.OcrTextSearch = True
 #Settings.OcrTextRead = True
+
+fname = "localconfig.txt"
+
+sendResFlag = True #global flag for send the resources
+collectResFlag = False #global flag for send the resources
 
     
 def getProps():
@@ -135,18 +142,58 @@ def warMode():
             sleep(300)
         emulator.closeEmulator(win)    
 
+def processCfg():
+    Debug.log(1, "-------- PROCESS CFG --------")
+    while True:
+        cfg = configuration.readCsvConfig("c:\\proj\\rokrobot\\rr_config.txt")
+        print cfg
+        emulator.runEmulator()
+        win = emulator.defineWindow(emulator.Emul_Nox)    
+        win.highlight(1)
+        if runROK(win):
+            Debug.log(1, "Begin rotating accounts")
+            for work in cfg:
+                actions = work[2]
+                resources = work[3]
+                try:
+                    account.enterAccount(win, work[0], work[1])
+                    Debug.log(1, "Do actions in CASTLE mode")
+                    modes.setMode(win, modes.Mode_Castle)
+                    closePopups(win)
+                    castle.checkForHints(win)
+                    if Act_FillBag in actions:
+                        castle.dragonChallenge(win)
+                        castle.treasury(win)
+                        castle.obtainGifts(win)
+                    if Act_IntRes in actions:
+                        castle.useFountain(win, kingdom.Res_Iron)
+                        castle.clearFarms(win)
+                    if Act_UseBag in actions:
+                        castle.clearBag(win)
+                    if Act_SendRes in actions and sendResFlag:    
+                        if modes.setMode(win, modes.Mode_Map):
+                            kingdom.sendResources(win, work[4], work[5])
+                    if Act_CollectRes in actions and collectResFlag:    
+                        if modes.setMode(win, modes.Mode_Map):
+                            kingdom.collectResources(win, resources)
+                except FindFailed:
+                    Debug.log(1, "EXCEPTION. FindFailed")
+                    continue
+                except ValueError:
+                    Debug.log(1, "EXCEPTION. UnknownGameState")
+                    break
+        else:
+            Debug.log(1, "Game is not started. Try later..")
+            sleep(300)
+        emulator.closeEmulator(win)
+    Debug.log(1, "---- PROCESS CFG ----")
+
+
+
 def adjustWinSize(win):
     p1 = win.getBottomRight()
     p2 = Location(p1.x + 546 - win.w, p1.y + 969 - win.h)
     slowDragDrop(win, p1, p2)
-
-accountImages = ["1505069619124.png", "1505070250701.png", "1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
-accountRes    = [kingdom.resSet4, kingdom.resSet4, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
-#accountRes    = [kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3]
-
-#accountImages = ["1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]
-#accountRes    = [kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
-
 
 
 Settings.MoveMouseDelay = 0.5
@@ -160,12 +207,15 @@ while False:
     sleep(20)
 
 #kingdom.occupyRuins(win)
-dailyRoutine()
-farming()
+processCfg()
+#dailyRoutine()
+#farming()
 #warMode()
-#win = emulator.defineWindow(emulator.Emul_Nox)    
-#win.highlight(2)
 #print "Emulator demensions:", win.w, win.h
+
+#win = emulator.defineWindow(emulator.Emul_Nox)    
+#win.highlight(1)
+#castle.getMailGifts(win)
 
 #kingdom.setupCamps(win)
 
@@ -183,8 +233,6 @@ farming()
 #castle.treasury(win)
 #kingdom.sendResources(win, "Buzuk", kingdom.Res_Wood)
 #castle.locate(win, castle.Pos_Gardens)
-
-
 
 #locate(win, Pos_Gardens)
 

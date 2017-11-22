@@ -3,6 +3,14 @@ from java.lang import System
 import random
 import math
 
+Act_FillBag    = 1 #Dragon, Treassury
+Act_IntRes     = 2 #Fountain, Farms
+Act_UseBag     = 3
+Act_CollectRes = 4 #Depends on global collectResFlag
+Act_SendRes    = 5 #Depends on global sendResFlag
+
+
+
 screenParts = [Region(1,1,2,3),  Region(5,1,2,3),  Region(9,1,2,3),
                Region(1,6,2,3),                       Region(9,6,2,3),
                Region(1,11,2,3), Region(5,11,2,3), Region(8,11,2,3)]

@@ -1,0 +1,112 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>configuration.sikuli</h2> <a href="configuration.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">from</span> common <span class="kw">import</span> *
+<span class="kw">import</span> common
+<span class="kw">import</span> account
+<span class="kw">import</span> kingdom
+
+accountImages = [<img src="1505069619124.png" />, <img src="1505070250701.png" />, <img src="1505070265885.png" />, <img src="1505070277576.png" />, <img src="1505070293164.png" />, <img src="1505070305383.png" />, <img src="1505070319898.png" />, <img src="1505070338301.png" />]
+sendToImages = [<img src="1506553279198.png" />, <img src="1506292276572.png" />, <img src="1506528760102.png" />, <img src="1506528776655.png" />]
+
+<span class="kw">def</span> semicolonStrToIntList(s):
+    words = s.strip().split(<span class="str">";"</span>)
+    res = []
+    <span class="kw">for</span> w <span class="kw">in</span> words:
+        res.append(int(w))
+    <span class="kw">return</span> res
+
+<span class="kw">def</span> readCsvConfig(fileName):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL readCsfConfig %1$s"</span>, fileName)
+    cfg = []
+    f = open(fileName)
+    <span class="kw">for</span> line <span class="kw">in</span> f.readlines():
+        Debug.log(<span class="dig">1</span>, <span class="str">"process line: %1$s"</span>, line)
+        (sAccType, sAccProps, sActList, sResList, sMaterialDest, sFoodDest) = line.strip().split(<span class="str">","</span>)
+        accType = int(sAccType)
+        <span class="kw">if</span> accType == account.Acc_Google:
+            accProps = sAccProps.strip()
+        <span class="kw">else</span>:
+            (sName, sPass) = sAccProps.strip().split(<span class="str">";"</span>)
+            accProps = [sName, sPass]
+        actions = semicolonStrToIntList(sActList)
+        resources = semicolonStrToIntList(sResList)
+        (rng, img1, img2) = sMaterialDest.strip().split(<span class="str">";"</span>)
+        matDest = [int(rng)-<span class="dig">1</span>, img1, img2]
+        (rng, img1, img2) = sFoodDest.strip().split(<span class="str">";"</span>)
+        foodDest = [int(rng)-<span class="dig">1</span>, img1, img2]
+        cfg.append([accType, accProps, actions, resources, matDest, foodDest])
+    f.close()
+    <span class="kw">return</span> cfg
+</pre>
+</body>
+</html>

@@ -72,6 +72,7 @@
 <pre class="sikuli-code">
 <span class="kw">from</span> common <span class="kw">import</span> *
 <span class="kw">import</span> common
+<span class="kw">import</span> configuration
 <span class="kw">import</span> account
 <span class="kw">import</span> modes
 <span class="kw">import</span> castle
@@ -85,9 +86,15 @@ reload(modes)
 reload(castle)
 reload(kingdom)
 reload(emulator)
+reload(configuration)
 
 <span class="cmt">#Settings.OcrTextSearch = True</span>
 <span class="cmt">#Settings.OcrTextRead = True</span>
+
+fname = <span class="str">"localconfig.txt"</span>
+
+sendResFlag = True <span class="cmt">#global flag for send the resources</span>
+collectResFlag = False <span class="cmt">#global flag for send the resources</span>
 
 
 <span class="kw">def</span> getProps():
@@ -207,18 +214,58 @@ reload(emulator)
             <span class="skw">sleep</span>(<span class="dig">300</span>)
         emulator.closeEmulator(win)
 
+<span class="kw">def</span> processCfg():
+    Debug.log(<span class="dig">1</span>, <span class="str">"-------- PROCESS CFG --------"</span>)
+    <span class="kw">while</span> True:
+        cfg = configuration.readCsvConfig(<span class="str">"c:\\proj\\rokrobot\\rr_config.txt"</span>)
+        <span class="kw">print</span> cfg
+        emulator.runEmulator()
+        win = emulator.defineWindow(emulator.Emul_Nox)
+        win.highlight(<span class="dig">1</span>)
+        <span class="kw">if</span> runROK(win):
+            Debug.log(<span class="dig">1</span>, <span class="str">"Begin rotating accounts"</span>)
+            <span class="kw">for</span> work <span class="kw">in</span> cfg:
+                actions = work[<span class="dig">2</span>]
+                resources = work[<span class="dig">3</span>]
+                <span class="kw">try</span>:
+                    account.enterAccount(win, work[<span class="dig">0</span>], work[<span class="dig">1</span>])
+                    Debug.log(<span class="dig">1</span>, <span class="str">"Do actions in CASTLE mode"</span>)
+                    modes.setMode(win, modes.Mode_Castle)
+                    closePopups(win)
+                    castle.checkForHints(win)
+                    <span class="kw">if</span> Act_FillBag <span class="kw">in</span> actions:
+                        castle.dragonChallenge(win)
+                        castle.treasury(win)
+                        castle.obtainGifts(win)
+                    <span class="kw">if</span> Act_IntRes <span class="kw">in</span> actions:
+                        castle.useFountain(win, kingdom.Res_Iron)
+                        castle.clearFarms(win)
+                    <span class="kw">if</span> Act_UseBag <span class="kw">in</span> actions:
+                        castle.clearBag(win)
+                    <span class="kw">if</span> Act_SendRes <span class="kw">in</span> actions <span class="kw">and</span> sendResFlag:
+                        <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
+                            kingdom.sendResources(win, work[<span class="dig">4</span>], work[<span class="dig">5</span>])
+                    <span class="kw">if</span> Act_CollectRes <span class="kw">in</span> actions <span class="kw">and</span> collectResFlag:
+                        <span class="kw">if</span> modes.setMode(win, modes.Mode_Map):
+                            kingdom.collectResources(win, resources)
+                <span class="kw">except</span> FindFailed:
+                    Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. FindFailed"</span>)
+                    <span class="kw">continue</span>
+                <span class="kw">except</span> ValueError:
+                    Debug.log(<span class="dig">1</span>, <span class="str">"EXCEPTION. UnknownGameState"</span>)
+                    <span class="kw">break</span>
+        <span class="kw">else</span>:
+            Debug.log(<span class="dig">1</span>, <span class="str">"Game is not started. Try later.."</span>)
+            <span class="skw">sleep</span>(<span class="dig">300</span>)
+        emulator.closeEmulator(win)
+    Debug.log(<span class="dig">1</span>, <span class="str">"---- PROCESS CFG ----"</span>)
+
+
+
 <span class="kw">def</span> adjustWinSize(win):
     p1 = win.getBottomRight()
     p2 = Location(p1.x + <span class="dig">546</span> - win.w, p1.y + <span class="dig">969</span> - win.h)
     slowDragDrop(win, p1, p2)
-
-accountImages = [<img src="1505069619124.png" />, <img src="1505070250701.png" />, <img src="1505070265885.png" />, <img src="1505070277576.png" />, <img src="1505070293164.png" />, <img src="1505070305383.png" />, <img src="1505070319898.png" />, <img src="1505070338301.png" />]
-accountRes    = [kingdom.resSet4, kingdom.resSet4, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]
-<span class="cmt">#accountRes    = [kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3, kingdom.resSet3]</span>
-
-<span class="cmt">#accountImages = ["1505070265885.png", "1505070277576.png", "1505070293164.png", "1505070305383.png", "1505070319898.png", "1505070338301.png"]</span>
-<span class="cmt">#accountRes    = [kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet1, kingdom.resSet2, kingdom.resSet2]</span>
-
 
 
 Settings.MoveMouseDelay = <span class="dig">0.5</span>
@@ -232,12 +279,15 @@ Settings.UserLogTime = True
     <span class="skw">sleep</span>(<span class="dig">20</span>)
 
 <span class="cmt">#kingdom.occupyRuins(win)</span>
-dailyRoutine()
-farming()
+processCfg()
+<span class="cmt">#dailyRoutine()</span>
+<span class="cmt">#farming()</span>
 <span class="cmt">#warMode()</span>
-<span class="cmt">#win = emulator.defineWindow(emulator.Emul_Nox)    </span>
-<span class="cmt">#win.highlight(2)</span>
 <span class="cmt">#print "Emulator demensions:", win.w, win.h</span>
+
+<span class="cmt">#win = emulator.defineWindow(emulator.Emul_Nox)    </span>
+<span class="cmt">#win.highlight(1)</span>
+<span class="cmt">#castle.getMailGifts(win)</span>
 
 <span class="cmt">#kingdom.setupCamps(win)</span>
 
@@ -255,8 +305,6 @@ farming()
 <span class="cmt">#castle.treasury(win)</span>
 <span class="cmt">#kingdom.sendResources(win, "Buzuk", kingdom.Res_Wood)</span>
 <span class="cmt">#castle.locate(win, castle.Pos_Gardens)</span>
-
-
 
 <span class="cmt">#locate(win, Pos_Gardens)</span>
 

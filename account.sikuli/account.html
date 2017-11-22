@@ -73,6 +73,9 @@
 <span class="kw">from</span> sikuli <span class="kw">import</span> *
 <span class="kw">from</span> common <span class="kw">import</span> *
 
+Acc_Google = <span class="dig">1</span>
+Acc_Email  = <span class="dig">2</span>
+
 <span class="kw">def</span> waitROKLoad(region):
     Debug.log(<span class="dig">1</span>, <span class="str">"CALL account.waitROKLoad"</span>)
     Debug.log(<span class="dig">1</span>, <span class="str">"Waiting for cover"</span>)
@@ -91,15 +94,37 @@
         <span class="kw">return</span> False
 <span class="cmt">#    closePopups(region)</span>
 
-<span class="kw">def</span> changeAccount(region, acc):
-    Debug.log(<span class="dig">1</span>, <span class="str">"CALL account.changeAccount"</span>)
+<span class="kw">def</span> enterGoogleAccount(region, accImage):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL account.enterGoogleAccount %1$s"</span>, accImage)
     backToNormalView(region)
 
     clickPersonRnd(region)
-    clickImagesRnd(region, [<img src="1503304318097.png" />, <img src="1503304337764.png" />, <img src="1503304352149.png" />, <img src="1506594490858.png" />, acc])
+    clickImagesRnd(region, [<img src="1503304318097.png" />, <img src="1503304337764.png" />, <img src="1503304352149.png" />, <img src="1506594490858.png" />, accImage])
     waitROKLoad(region)
     backToNormalView(region)
-    Debug.log(<span class="dig">1</span>, <span class="str">"account.changeAccount finished"</span>)
+    Debug.log(<span class="dig">1</span>, <span class="str">"account.enterGoogleAccount finished"</span>)
+
+<span class="kw">def</span> enterEmailAccount(region, user, password):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL account.enterEmailAccount %1$s"</span>, user)
+    backToNormalView(region)
+
+    clickPersonRnd(region)
+    clickImagesRnd(region, [<img src="1503304318097.png" />, <img src="1503304337764.png" />, <img src="1503304352149.png" />, <img src="1511192494324.png" />])
+    region.<span class="skw">type</span>(<img src="1511192873354.png" />, user)
+    region.<span class="skw">type</span>(<img src="1511192934745.png" />, password)
+    clickRnd( <span class="skw">find</span>(<img src="1511276221382.png" />) )
+    waitROKLoad(region)
+    backToNormalView(region)
+    Debug.log(<span class="dig">1</span>, <span class="str">"account.enterEmailAccount finished"</span>)
+
+<span class="kw">def</span> enterAccount(region, accType, accProps):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL account.enterAccount"</span>)
+    <span class="kw">if</span> accType == Acc_Google:
+        enterGoogleAccount(region, accProps) <span class="cmt">#accProps must be an image</span>
+    <span class="kw">elif</span> accType == Acc_Email:
+        enterEmailAccount(region, accProps[<span class="dig">0</span>], accProps[<span class="dig">1</span>]) <span class="cmt">#accProps must be an list with name and password</span>
+    <span class="kw">else</span>:
+        Debug.log(<span class="dig">1</span>, <span class="str">"Unknown account type"</span>)
 </pre>
 </body>
 </html>
