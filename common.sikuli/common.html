@@ -191,6 +191,28 @@ mD = [<span class="dig">6</span>, <span class="dig">1</span>]
     sleepRnd(<span class="dig">2000</span>)
     <span class="kw">print</span> <span class="str">"common.backToNormalView finished"</span>
 
+<span class="kw">def</span> safeClick(region, img, timeout=<span class="dig">1</span>):
+    Debug.log(<span class="dig">1</span>, <span class="str">"CALL common.safeClick %1$s"</span>, img)
+    icon = region.exists(img, timeout)
+    <span class="kw">if</span> icon:
+        clickRnd(icon)
+        <span class="kw">return</span> True
+    <span class="kw">else</span>:
+        closePopups(region)
+        icon = region.exists(img, timeout)
+        <span class="kw">if</span> icon:
+            clickRnd(icon)
+            <span class="kw">return</span> True
+        <span class="kw">else</span>:
+            Debug.log(<span class="dig">1</span>, <span class="str">"Image to click not found"</span>)
+            <span class="kw">return</span> False
+
+<span class="kw">def</span> safeClickImages(region, images):
+    <span class="kw">for</span> i <span class="kw">in</span> images:
+        <span class="kw">if</span> <span class="kw">not</span> safeClick(region, i, <span class="dig">2</span>):
+            <span class="kw">return</span> False
+    <span class="kw">return</span> True
+
 
 <span class="kw">def</span> coordInList(coord_list, coord):
     <span class="kw">for</span> c <span class="kw">in</span> coord_list:

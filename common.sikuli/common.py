@@ -119,6 +119,28 @@ def backToNormalView(region):
     sleepRnd(2000)
     print "common.backToNormalView finished"
 
+def safeClick(region, img, timeout=1):
+    Debug.log(1, "CALL common.safeClick %1$s", img)
+    icon = region.exists(img, timeout)
+    if icon:
+        clickRnd(icon)
+        return True
+    else:
+        closePopups(region)
+        icon = region.exists(img, timeout)
+        if icon:
+            clickRnd(icon)
+            return True
+        else:
+            Debug.log(1, "Image to click not found")
+            return False
+
+def safeClickImages(region, images):
+    for i in images:
+        if not safeClick(region, i, 2):
+            return False
+    return True
+
 
 def coordInList(coord_list, coord):
     for c in coord_list:

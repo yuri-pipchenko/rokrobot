@@ -409,7 +409,9 @@ routes = [
         <span class="kw">return</span> False
     <span class="kw">for</span> r <span class="kw">in</span> resKinds:
         <span class="kw">if</span> <span class="kw">not</span> zeros[r]:
-            res = region.<span class="skw">find</span>( convoyImages[r] )
+            res = region.exists( convoyImages[r] )
+            <span class="kw">if</span> <span class="kw">not</span> res:
+                <span class="kw">continue</span>
             beg_point = pointRnd( res.right(<span class="dig">200</span>).<span class="skw">find</span>(<img src="1505574963232.png" />) )
             end_point = pointRnd( res.right(<span class="dig">700</span>).<span class="skw">find</span>(<img src="1506291390404.png" />).left(<span class="dig">30</span>) )
             slowDragDrop(region, beg_point, end_point)

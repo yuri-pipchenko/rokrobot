@@ -337,7 +337,9 @@ def sendRes(region, Destination, resKinds):
         return False
     for r in resKinds:
         if not zeros[r]:
-            res = region.find( convoyImages[r] )
+            res = region.exists( convoyImages[r] )
+            if not res:
+                continue
             beg_point = pointRnd( res.right(200).find("1505574963232.png") )
             end_point = pointRnd( res.right(700).find("1506291390404.png").left(30) )
             slowDragDrop(region, beg_point, end_point)

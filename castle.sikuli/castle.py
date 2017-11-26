@@ -67,7 +67,8 @@ def checkForHints(owner):
     cargo = owner.exists("1504120900956.png", 2)
     if cargo:
         clickRnd(cargo)
-        clickRnd( owner.wait("1503303285947.png", 2) )
+        safeClick(owner, "1511561846792.png")
+        
     help = owner.exists("1504695520824.png", 2)
     if help:
         clickRnd(help)
@@ -75,6 +76,7 @@ def checkForHints(owner):
 
 def locate(owner, locIdx):
     Debug.log(1, "CALL castle.locate %1$s", locIdx)
+    closePopups(owner)
     trg = anchors[locIdx]
     trgR = exists(trg.getImg(), 1)
     if trgR != None:
@@ -105,12 +107,10 @@ def locate(owner, locIdx):
 
 def dragonChallenge(owner):
     Debug.log(1, "CALL ---- DRAGON CHALLENGE -----")
-    closePopups(owner)
-    checkForHints(owner)
     locate(owner, Pos_Gardens)
-    checkForHints(owner)
     try:
-        clickImagesRnd(owner, ["1504525543350.png", "1505126524054.png"])
+        if not safeClickImages(owner, ["1504525543350.png", "1505126524054.png"]):
+            return           
         fast = owner.exists(Pattern("1505649506701.png").similar(0.90), 2)
         if fast:
             Debug.log(1, "Fast mode started")
@@ -159,8 +159,8 @@ def dragonChallenge(owner):
                         sleep(2)
         clickBack()
         Debug.log(1, "Treating the troops")
-        clickRnd( find("1505426172474.png") )
-        if owner.exists("1506636887579.png", 1):
+        clickRnd( owner.find("1505426172474.png") )
+        if owner.exists(Pattern("1506636887579.png").similar(0.80), 1):
             Debug.log(1, "Troops are in hospital already")
             clickBack()
         clickImagesRnd(owner, ["1505426273902.png", "1505426300565.png"])
@@ -173,8 +173,8 @@ def treasury(owner):
     Debug.log(1, "CALL ---- TREASURY ----")
     closePopups(owner)
     checkForHints(owner)
-    clickImagesRnd(owner, ["1504525543350.png", "1505126562813.png"])
-    
+    if not safeClickImages(owner, ["1504525543350.png", "1505126562813.png"]):
+        return
     sleep(5)
     fin = owner.exists("1503612318821.png", 1)
     if fin:
@@ -289,14 +289,12 @@ def useFountain(region, resKind):
     Debug.log(1, "CALL ---- USE FOUNTAIN RESOURCES ----")
     closePopups(region)
     locate(region, Pos_Fountain)
-    clickImagesRnd(region, ["1507131360536.png", "1507131412687.png"] )
+    safeClickImages(region, ["1507131360536.png", "1507131412687.png"])
     img = region.exists(fountainImages[resKind])
     btn_reg = img.grow(100, 0).below(150)
     while True:
-        btn = btn_reg.exists("1507131841641.png", 1)
-        if btn:
+        if safeClick(btn_reg, "1507131841641.png"):
             Debug.log(1, "got resource in Fountain")
-            clickRnd(btn)
             sleep(2)
         else:
             Debug.log(1, "No more free resource in Fountain")

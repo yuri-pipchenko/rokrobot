@@ -201,11 +201,6 @@ Settings.UserLogs = True
 Settings.UserLogPrefix = "user"
 Settings.UserLogTime = True
 
-while False:
-    kingdom.setupCamps(win)
-    kingdom.returnCamps(win)
-    sleep(20)
-
 #kingdom.occupyRuins(win)
 processCfg()
 #dailyRoutine()
@@ -215,6 +210,7 @@ processCfg()
 
 #win = emulator.defineWindow(emulator.Emul_Nox)    
 #win.highlight(1)
+
 #castle.getMailGifts(win)
 
 #kingdom.setupCamps(win)
